@@ -6,6 +6,7 @@ import { LayoutDashboard, History, BarChart3, Coins, Users, LogOut } from 'lucid
 import axios from 'axios';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useQuery } from '@tanstack/react-query';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,13 +16,24 @@ const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'History', href: '/history', icon: History },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Users', href: '/users', icon: Users },
+  { name: 'Users', href: '/users', icon: Users, adminOnly: true },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => {
+      const { data } = await axios.get('/api/auth/me');
+      return data;
+    },
+    retry: false,
+  });
   
   if (pathname === '/login') return null;
+
+  const filteredNavItems = navItems.filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
@@ -37,7 +49,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex gap-1">
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
               return (
