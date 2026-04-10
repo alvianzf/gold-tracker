@@ -1,24 +1,38 @@
 import cron from 'node-cron';
-import axios from 'axios';
+import { scrapeGoldPrices } from './scraper';
+import prisma from './prisma';
+import { saveDailySummary } from './portfolio';
+
+let isScheduled = false;
 
 /**
- * Daily schedule at 09:00 Asia/Jakarta
- * Asia/Jakarta is UTC+7, so 09:00 WIB is 02:00 UTC
+ * Daily schedule at 09:00 Asia/Jakarta (02:00 UTC)
+ * Scrapes fresh gold prices and saves portfolio snapshots.
  */
 export function initCron() {
-  console.log('Initializing gold price scraper cron [09:00 Asia/Jakarta]');
+  if (isScheduled) return; // prevent duplicate scheduling on HMR
+  isScheduled = true;
 
-  // '0 2 * * *' runs at 02:00 UTC
+  console.log('[CRON] Initialized — daily scrape scheduled at 09:00 WIB (02:00 UTC)');
+
   cron.schedule('0 2 * * *', async () => {
-    console.log('Running daily gold price scrape...');
+    console.log('[CRON] Running daily gold price scrape...');
     try {
-      // We call our own API endpoint to trigger the scrape
-      // In production, you'd use the full URL or a dedicated internal function
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-      await axios.post(`${appUrl}/api/scrape`);
-      console.log('Daily scrape completed successfully');
+      const scrapedData = await scrapeGoldPrices();
+      const now = new Date();
+
+      await prisma.$transaction(
+        scrapedData.map((data) =>
+          prisma.priceHistory.create({
+            data: { ...data, date: now },
+          })
+        )
+      );
+
+      const summary = await saveDailySummary();
+      console.log(`[CRON] Scrape complete: ${scrapedData.length} prices, ${summary.length} portfolio snapshots`);
     } catch (error) {
-      console.error('Daily scrape failed:', error);
+      console.error('[CRON] Daily scrape failed:', error);
     }
   });
 }
