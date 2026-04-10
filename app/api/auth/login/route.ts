@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       name: 'session-token',
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.SESSION_COOKIE_SECURE === 'true' || (process.env.NODE_ENV === 'production' && process.env.SESSION_COOKIE_SECURE !== 'false'),
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24, // 24 hours
