@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Holding {
+  id            String   @id @default(uuid())
+  type          GoldType
+  weight        Float
+  buyPrice      Float
+  buyDate       DateTime
+  receiptUrl    String?
+  serialNumber  String?
+  status        HoldingStatus @default(ACTIVE)
+
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  transactions  Transaction[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  holdingId   String
+  holding     Holding  @relation(fields: [holdingId], references: [id], onDelete: Cascade)
+
+  type        TransactionType
+  price       Float
+  date        DateTime
+
+  createdAt   DateTime @default(now())
+}
+
+model PriceHistory {
+  id         String   @id @default(uuid())
+  type       GoldType
+  weight     Float
+  priceBuy   Float
+  priceSell  Float?
+  date       DateTime
+
+  createdAt  DateTime @default(now())
+
+  @@index([type, date])
+}
+
+model DailyPortfolioSummary {
+  id            String   @id @default(uuid())
+  date          DateTime @default(now())
+  totalValue    Float
+  totalCost     Float
+  totalProfit   Float
+  profitPercent Float
+
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+
+  @@index([date])
+}
+
+enum GoldType {
+  GALERI24
+  ANTAM
+  UBS
+}
+
+enum HoldingStatus {
+  ACTIVE
+  SOLD
+}
+
+enum TransactionType {
+  BUY
+  SELL
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  holdings  Holding[]
+  summaries DailyPortfolioSummary[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
