@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { startOfDay, subDays } from 'date-fns';
+import { GoldType } from '@prisma/client';
+import { startOfDay } from 'date-fns';
 
 export async function GET() {
   try {
     // Get distinct types to fetch for (weight 1 only for ticker)
-    const types = ['ANTAM', 'GALERI24', 'UBS'];
+    const types: GoldType[] = ['ANTAM', 'GALERI24', 'UBS'];
     
     const tickerData = await Promise.all(types.map(async (type) => {
       // Get the latest price
       const latest = await prisma.priceHistory.findFirst({
-        where: { type: type as any, weight: 1 },
+        where: { type, weight: 1 },
         orderBy: { date: 'desc' },
       });
 
@@ -20,7 +21,7 @@ export async function GET() {
       // Usually "previous day" means the last record from a different day
       const previous = await prisma.priceHistory.findFirst({
         where: { 
-          type: type as any, 
+          type, 
           weight: 1,
           date: { lt: startOfDay(latest.date) }
         },
