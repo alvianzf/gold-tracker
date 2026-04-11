@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma';
 import { GoldType } from '@prisma/client';
 import { startOfDay } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     // Get distinct types to fetch for (weight 1 only for ticker)
