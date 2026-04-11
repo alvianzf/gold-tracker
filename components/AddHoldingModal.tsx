@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, Plus, Upload, Loader2, Coins } from 'lucide-react';
+import { X, Plus, Coins, Loader2 } from 'lucide-react';
+import ReceiptUploader from './ReceiptUploader';
 
 export default function AddHoldingModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: latestPrices } = useQuery({
@@ -46,23 +46,14 @@ export default function AddHoldingModal() {
     },
   });
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    const data = new FormData();
-    data.append('file', file);
-
-    try {
-      const response = await axios.post('/api/upload', data);
-      setFormData(prev => ({ ...prev, receiptUrl: response.data.url }));
-    } catch {
-      console.error('Upload failed');
-    } finally {
-      setIsUploading(false);
-    }
+  const handleUploadSuccess = (url: string) => {
+    setFormData(prev => ({ ...prev, receiptUrl: url }));
   };
+
+  const handleRemoveReceipt = () => {
+    setFormData(prev => ({ ...prev, receiptUrl: '' }));
+  };
+
 
   if (!isOpen) {
     return (
@@ -180,20 +171,12 @@ export default function AddHoldingModal() {
 
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Receipt</label>
-            <div className="relative">
-              <input 
-                type="file" 
-                className="hidden" 
-                id="receipt-upload" 
-                onChange={handleFileUpload}
-              />
-              <label 
-                htmlFor="receipt-upload"
-                className="flex items-center justify-center gap-2 w-full bg-slate-950 border border-dashed border-white/10 rounded-xl px-4 py-6 text-slate-400 hover:text-white hover:border-amber-500/50 cursor-pointer transition-all"
-              >
-                {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : formData.receiptUrl ? <span className="text-emerald-500 font-medium">Receipt Attached</span> : <><Upload className="w-5 h-5" /> Upload Receipt</>}
-              </label>
-            </div>
+            <ReceiptUploader 
+              receiptUrl={formData.receiptUrl} 
+              onUploadSuccess={handleUploadSuccess} 
+              onRemove={handleRemoveReceipt}
+              allowView={false} // Minimal view in Add Form to save space, or we can enable view. Let's enable view!
+            />
           </div>
 
           <button 

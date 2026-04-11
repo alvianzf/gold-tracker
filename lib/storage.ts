@@ -10,7 +10,7 @@ export interface StorageProvider {
 
 // Local Storage Implementation (Dev)
 class LocalStorageProvider implements StorageProvider {
-  private uploadDir = path.join(process.cwd(), 'public', 'uploads');
+  private uploadDir = path.join(process.cwd(), '.storage', 'uploads');
 
   async uploadFile(file: Buffer, fileName: string): Promise<string> {
     await fs.mkdir(this.uploadDir, { recursive: true });
@@ -20,7 +20,7 @@ class LocalStorageProvider implements StorageProvider {
     const filePath = path.join(this.uploadDir, uniqueName);
     
     await fs.writeFile(filePath, file);
-    return `/uploads/${uniqueName}`;
+    return `/api/files/${uniqueName}`;
   }
 
   async deleteFile(url: string): Promise<void> {

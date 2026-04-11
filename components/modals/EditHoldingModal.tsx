@@ -4,6 +4,7 @@ import { X, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
+import ReceiptUploader from '../ReceiptUploader';
 
 interface EditModalProps {
   holding: any;
@@ -89,13 +90,12 @@ export default function EditHoldingModal({ holding, onClose }: EditModalProps) {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-wider text-slate-400 font-semibold pl-1">Receipt URL</label>
-            <input 
-              type="url" 
-              value={formData.receiptUrl}
-              onChange={(e) => setFormData({...formData, receiptUrl: e.target.value})}
-              className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50"
-              placeholder="https://..."
+            <label className="text-xs uppercase tracking-wider text-slate-400 font-semibold pl-1">Receipt</label>
+            <ReceiptUploader 
+              receiptUrl={formData.receiptUrl}
+              onUploadSuccess={(url) => setFormData({...formData, receiptUrl: url})}
+              onRemove={() => setFormData({...formData, receiptUrl: ''})}
+              allowView={true}
             />
           </div>
 
