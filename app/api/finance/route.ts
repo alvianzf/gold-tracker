@@ -10,7 +10,7 @@ export async function GET() {
     }
 
     const transactions = await prisma.financeTransaction.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id as string },
       orderBy: { date: 'desc' },
     });
 
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         purpose,
         photoUrl,
         thumbnailUrl,
-        userId: user.id,
+        userId: user.id as string,
       },
     });
 

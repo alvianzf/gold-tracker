@@ -151,9 +151,9 @@ export default function HoldingsTable() {
 
   return (
     <>
-      <div className="overflow-x-auto rounded-2xl border border-white/5 bg-slate-900/30 backdrop-blur-xl">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead className="bg-white/5 text-slate-400 uppercase text-[10px] tracking-widest">
+          <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-widest border-b border-slate-200">
             <tr>
               <th className="px-6 py-4 font-semibold">Asset</th>
               <th className="px-6 py-4 font-semibold">Weight</th>
@@ -164,24 +164,24 @@ export default function HoldingsTable() {
               <th className="px-6 py-4 font-semibold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-slate-100">
             {holdings.map((holding) => (
-              <tr key={holding.id} className="hover:bg-white/5 transition-colors group">
+              <tr key={holding.id} className="hover:bg-slate-50 transition-colors group">
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 font-bold">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 font-black">
                       {holding.type[0]}
                     </div>
-                    <span className="font-semibold text-slate-100">{holding.type}</span>
+                    <span className="font-black text-slate-800">{holding.type}</span>
                   </div>
                 </td>
-                <td className="px-6 py-5 text-slate-300 font-medium">{holding.weight}g</td>
-                <td className="px-6 py-5 text-slate-300 font-medium">Rp {formatCurrency(holding.buyPrice)}</td>
-                <td className="px-6 py-5 font-bold text-slate-100">
+                <td className="px-6 py-5 text-slate-600 font-bold">{holding.weight}g</td>
+                <td className="px-6 py-5 text-slate-600 font-bold">Rp {formatCurrency(holding.buyPrice)}</td>
+                <td className="px-6 py-5 font-black text-slate-900">
                   Rp {formatCurrency(holding.currentValue)}
                 </td>
                 <td className="px-6 py-5 text-right">
-                  <div className={`inline-flex items-center gap-1 font-bold ${holding.pl >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                  <div className={`inline-flex items-center gap-1 font-black ${holding.pl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                     {holding.pl >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                     {holding.plPercent.toFixed(2)}%
                   </div>
@@ -189,7 +189,7 @@ export default function HoldingsTable() {
                 <td className="px-6 py-5 text-center">
                   <button 
                     onClick={() => handleSell(holding)}
-                    className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 px-4 py-1.5 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1.5"
+                    className="bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200 px-4 py-1.5 rounded-lg text-xs font-black transition-all inline-flex items-center gap-1.5 shadow-sm"
                   >
                     <Tag className="w-3 h-3" /> Sell
                   </button>

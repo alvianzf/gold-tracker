@@ -14,7 +14,7 @@ export async function GET() {
     const today = new Date();
     const existing = await prisma.aiSuggestion.findFirst({
       where: {
-        userId: user.id,
+        userId: user.id as string,
         date: {
           gte: startOfDay(today),
           lte: endOfDay(today),
@@ -28,7 +28,7 @@ export async function GET() {
 
     // Generate new suggestion if none exists for today
     const transactions = await prisma.financeTransaction.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id as string },
       orderBy: { date: 'desc' },
       take: 20, // Take last 20 for context
     });
@@ -38,7 +38,7 @@ export async function GET() {
     const newSuggestion = await prisma.aiSuggestion.create({
       data: {
         content: suggestionContent || 'Keep tracking to see insights!',
-        userId: user.id,
+        userId: user.id as string,
         date: today,
       },
     });
@@ -60,7 +60,7 @@ export async function POST() {
     const today = new Date();
     const existing = await prisma.aiSuggestion.findFirst({
       where: {
-        userId: user.id,
+        userId: user.id as string,
         date: {
           gte: startOfDay(today),
           lte: endOfDay(today),
@@ -77,7 +77,7 @@ export async function POST() {
     }
 
     const transactions = await prisma.financeTransaction.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id as string },
       orderBy: { date: 'desc' },
       take: 20,
     });

@@ -71,57 +71,29 @@ export default function ReceiptUploader({ receiptUrl, onUploadSuccess, onRemove,
 
   // View state if receipt exists
   if (receiptUrl) {
-    const isPdf = receiptUrl.toLowerCase().endsWith('.pdf');
     return (
-      <div className="relative border border-white/10 rounded-xl overflow-hidden bg-slate-950 flex flex-col items-center justify-center p-2 group">
-        {allowView ? (
-          <div className="w-full h-48 bg-slate-900 rounded-lg overflow-hidden relative flex items-center justify-center">
-            {isPdf ? (
-              <div className="flex flex-col items-center gap-2 text-slate-400">
-                <FileIcon className="w-12 h-12 text-rose-500" />
-                <span className="text-xs">PDF Document attached</span>
-                <a 
-                  href={receiptUrl} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="text-amber-500 hover:text-amber-400 text-xs mt-2 underline"
-                >
-                  Open in new tab
-                </a>
-              </div>
-            ) : (
-              <img 
-                src={receiptUrl} 
-                alt="Receipt" 
-                className="w-full h-full object-contain"
-              />
+      <div className="space-y-4">
+        <div className="relative group rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 aspect-video">
+          <Image src={receiptUrl} alt="Receipt Preview" fill className="object-cover" />
+          <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+            {allowView && (
+              <button
+                type="button"
+                onClick={() => window.open(receiptUrl, '_blank')}
+                className="p-2 bg-white rounded-xl text-slate-950 hover:bg-amber-100 transition-colors shadow-lg"
+              >
+                <Eye className="w-5 h-5" />
+              </button>
             )}
-            
             <button
               type="button"
-              onClick={handleRemove}
-              className="absolute top-2 right-2 bg-rose-500/90 hover:bg-rose-500 text-white p-2 rounded-full shadow-lg transition-transform hover:scale-110 opacity-0 group-hover:opacity-100"
-              title="Remove Receipt"
+              onClick={onRemove}
+              className="p-2 bg-rose-500 rounded-xl text-white hover:bg-rose-600 transition-colors shadow-lg"
             >
-              <X className="w-4 h-4" />
+              <Trash2 className="w-5 h-5" />
             </button>
           </div>
-        ) : (
-          <div className="w-full p-4 flex items-center justify-between">
-             <div className="flex items-center gap-3 text-emerald-500">
-                <FileIcon className="w-5 h-5" />
-                <span className="font-medium text-sm">Receipt Attached</span>
-             </div>
-             <button
-                type="button"
-                onClick={handleRemove}
-                className="text-slate-400 hover:text-rose-500 transition-colors"
-                title="Remove Receipt"
-              >
-                <X className="w-5 h-5" />
-              </button>
-          </div>
-        )}
+        </div>
       </div>
     );
   }

@@ -24,7 +24,7 @@ export async function POST(
     }
 
     const holding = await prisma.holding.findFirst({
-      where: { id: id, userId: user.id },
+      where: { id: id, userId: user.id as string },
     });
 
     if (!holding) {

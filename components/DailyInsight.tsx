@@ -46,16 +46,16 @@ export default function DailyInsight() {
     <motion.div 
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden bg-gradient-to-br from-indigo-500/10 via-amber-500/5 to-transparent border border-white/10 p-8 rounded-3xl shadow-2xl backdrop-blur-xl group"
+      className="relative overflow-hidden bg-white border border-slate-200 p-8 rounded-3xl shadow-sm group"
     >
       {/* Background Glow */}
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-100/50 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-100/50 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative flex flex-col md:flex-row items-center gap-6">
         <div className="flex-shrink-0">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.3)]">
-            <Sparkles className="w-8 h-8 text-slate-950" />
+          <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center shadow-sm">
+            <Sparkles className="w-8 h-8 text-amber-600" />
           </div>
         </div>
 
@@ -70,7 +70,7 @@ export default function DailyInsight() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
-              className="text-lg md:text-2xl font-bold text-white leading-relaxed italic drop-shadow-sm"
+              className="text-lg md:text-2xl font-bold text-slate-800 leading-relaxed italic"
             >
               "{insight.content}"
             </motion.p>
@@ -83,8 +83,8 @@ export default function DailyInsight() {
             disabled={insight.regenerated || isRegenerating}
             className={`group relative flex items-center gap-2 px-5 py-3 rounded-2xl font-bold transition-all ${
               insight.regenerated 
-                ? 'bg-white/5 text-slate-500 cursor-not-allowed border border-transparent' 
-                : 'bg-white/10 hover:bg-amber-500 hover:text-slate-950 text-amber-500 border border-amber-500/20 shadow-lg'
+                ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-transparent' 
+                : 'bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200'
             }`}
           >
             {isRegenerating ? (

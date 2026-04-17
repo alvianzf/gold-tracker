@@ -12,6 +12,7 @@ import {
   Area,
 } from 'recharts';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/lib/utils';
 
 interface TrendChartProps {
   data: Record<string, unknown>[];
@@ -29,7 +30,7 @@ export default function TrendChart({
   type = 'area' 
 }: TrendChartProps) {
   if (!data?.length) return (
-    <div className="h-[300px] flex items-center justify-center text-slate-500 bg-slate-900/20 border border-white/5 rounded-3xl">
+    <div className="h-[300px] flex items-center justify-center text-slate-400 bg-slate-50 border border-slate-200 rounded-3xl font-bold">
       No historical data available. Run a scrape to begin tracking.
     </div>
   );
@@ -52,7 +53,7 @@ export default function TrendChart({
               <stop offset="95%" stopColor={color} stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
           <XAxis 
             dataKey="formattedDate" 
             axisLine={false} 
@@ -66,13 +67,14 @@ export default function TrendChart({
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#0f172a', 
-              border: '1px solid #334155', 
+              backgroundColor: '#ffffff', 
+              border: '1px solid #e2e8f0', 
               borderRadius: '12px',
-              fontSize: '12px'
+              fontSize: '12px',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
             }}
-            itemStyle={{ color: '#f8fafc' }}
-            formatter={(value: unknown) => [`Rp ${Number(value).toLocaleString('id-ID')}`, label]}
+            itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+            formatter={(value: unknown) => [`Rp ${formatCurrency(Number(value))}`, 'Price']}
           />
           <Plot 
             type="monotone" 

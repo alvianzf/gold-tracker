@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSessionUser();
@@ -20,7 +20,7 @@ export async function PATCH(
       where: { id },
     });
 
-    if (!existing || existing.userId !== user.id) {
+    if (!existing || existing.userId !== user.id as string) {
       return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
     }
 
@@ -46,7 +46,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSessionUser();

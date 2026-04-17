@@ -2,6 +2,7 @@
 
 import { X, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/lib/utils';
 
 interface ViewModalProps {
   holding: {
@@ -25,49 +26,58 @@ export default function ViewHoldingModal({ holding, onClose }: ViewModalProps) {
   const isProfit = holding.pl >= 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-lg bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
-        <button 
-          onClick={onClose}
-          className="absolute top-6 right-6 text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-sm bg-white border border-slate-200 rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-amber-100 p-2 rounded-xl text-amber-600 shadow-sm">
+              <Eye className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-black text-slate-800">Holding Details</h2>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-900 transition-colors">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
-        <h2 className="text-xl font-bold text-white mb-6">Holding Details</h2>
-
-        <div className="space-y-0">
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Asset</span>
-            <span className="font-bold text-slate-100 uppercase">{holding.type}</span>
-          </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Weight</span>
-            <span className="font-bold text-slate-100">{holding.weight}g</span>
-          </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Buy Price</span>
-            <span className="font-mono text-slate-100">Rp {holding.buyPrice.toLocaleString('id-ID')}</span>
-          </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Current Value</span>
-            <span className="font-mono font-bold text-amber-500">Rp {holding.currentValue.toLocaleString('id-ID')}</span>
-          </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Profit / Loss</span>
-            <div className={`inline-flex items-center gap-1.5 font-bold ${isProfit ? 'text-emerald-500' : 'text-rose-500'}`}>
-              {isProfit ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              <span className="font-mono">Rp {Math.abs(holding.pl).toLocaleString('id-ID')}</span>
-              <span className="text-xs opacity-70">({holding.plPercent.toFixed(2)}%)</span>
+        <div className="p-6 space-y-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Asset Type</p>
+              <h3 className="text-2xl font-black text-slate-900 leading-none">{holding.type}</h3>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Weight</p>
+              <h3 className="text-2xl font-black text-amber-600 leading-none">{holding.weight}g</h3>
             </div>
           </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Acquired Date</span>
-            <span className="text-slate-100">{format(new Date(holding.buyDate), 'PPP')}</span>
-          </div>
-          <div className="flex justify-between items-center py-3 border-b border-white/5">
-            <span className="text-slate-400 text-sm">Serial Number</span>
-            <span className="font-mono text-slate-300">{holding.serialNumber || 'N/A'}</span>
+
+          <div className="space-y-1">
+            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+              <span className="text-slate-500 text-sm font-bold">Buy Date</span>
+              <span className="font-bold text-slate-800">{format(new Date(holding.buyDate), 'dd MMM yyyy')}</span>
+            </div>
+            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+              <span className="text-slate-500 text-sm font-bold">Serial Number</span>
+              <span className="font-bold text-slate-800 font-mono">{holding.serialNumber || '-'}</span>
+            </div>
+            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+              <span className="text-slate-500 text-sm font-bold">Buy Price</span>
+              <span className="font-bold text-slate-800">Rp {formatCurrency(holding.buyPrice)}</span>
+            </div>
+            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+              <span className="text-slate-500 text-sm font-bold">Current Value</span>
+              <span className="font-black text-amber-600">Rp {formatCurrency(holding.currentValue)}</span>
+            </div>
+            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+              <span className="text-slate-500 text-sm font-bold">Profit / Loss</span>
+              <div className={`inline-flex items-center gap-1.5 font-black ${isProfit ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {isProfit ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                <span>Rp {formatCurrency(Math.abs(holding.pl))}</span>
+                <span className="text-xs opacity-70">({holding.plPercent.toFixed(2)}%)</span>
+              </div>
+            </div>
           </div>
           {holding.receiptUrl && (
             <div className="flex justify-between items-center py-3">

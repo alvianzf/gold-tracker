@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
     const where: any = {
       holding: {
-        userId: user.id
+        userId: user.id as string,
       }
     };
     

@@ -55,17 +55,17 @@ export default function PortfolioStats() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {stats.map((stat, i) => (
-        <div key={i} className="relative overflow-hidden group bg-slate-900/50 border border-white/5 rounded-3xl p-6 transition-all hover:bg-slate-900/80">
+        <div key={i} className="relative overflow-hidden group bg-white border border-slate-200 rounded-3xl p-6 transition-all hover:bg-slate-50 shadow-sm">
           <div className="relative z-10 flex flex-col gap-4">
             <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
               <stat.icon className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-widest">{stat.label}</p>
-              <p className={`text-2xl font-bold ${stat.color} mt-1`}>{stat.value}</p>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              <p className={`text-2xl font-black ${stat.color} mt-1`}>{stat.value}</p>
             </div>
           </div>
-          <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${stat.bg} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
+          <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${stat.bg} rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity`} />
         </div>
       ))}
     </div>

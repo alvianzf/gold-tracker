@@ -5,6 +5,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { formatCurrency } from '@/lib/utils';
 
 export default function PriceTicker() {
   const { data: prices } = useQuery({
@@ -23,7 +24,7 @@ export default function PriceTicker() {
   const duplicatedItems = [...prices, ...prices, ...prices, ...prices, ...prices];
 
   return (
-    <div className="h-8 bg-slate-900/80 border-b border-white/5 flex overflow-hidden whitespace-nowrap items-center w-full">
+    <div className="h-8 bg-amber-50 border-b border-amber-100 flex overflow-hidden whitespace-nowrap items-center w-full">
       <motion.div
         animate={{ x: ["0%", "-50%"] }}
         transition={{ 
@@ -36,13 +37,13 @@ export default function PriceTicker() {
         <div className="flex gap-12 items-center px-6 pr-12">
           {duplicatedItems.map((item: { id: string; type: string; priceBuy: number; trend: 'up' | 'down' | 'stable' }, i) => (
             <div key={`set1-${item.id}-${i}`} className="flex items-center gap-2 text-[11px] font-semibold tracking-wider">
-              <span className="text-amber-500 uppercase">{item.type}</span>
-              <span className="text-slate-200">
-                Rp {item.priceBuy.toLocaleString('id-ID')}
+              <span className="text-amber-600 uppercase">{item.type}</span>
+              <span className="text-slate-700">
+                Rp {formatCurrency(item.priceBuy)}
               </span>
-              {item.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-500" />}
-              {item.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-500" />}
-              {item.trend === 'stable' && <Minus className="w-3 h-3 text-slate-500 opacity-60" />}
+              {item.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-600" />}
+              {item.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-600" />}
+              {item.trend === 'stable' && <Minus className="w-3 h-3 text-slate-400 opacity-60" />}
             </div>
           ))}
         </div>
@@ -51,7 +52,7 @@ export default function PriceTicker() {
             <div key={`set2-${item.id}-${i}`} className="flex items-center gap-2 text-[11px] font-semibold tracking-wider">
               <span className="text-amber-500 uppercase">{item.type}</span>
               <span className="text-slate-200">
-                Rp {item.priceBuy.toLocaleString('id-ID')}
+                Rp {formatCurrency(item.priceBuy)}
               </span>
               {item.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-500" />}
               {item.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-500" />}

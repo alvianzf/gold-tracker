@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Plus, Coins, Loader2 } from 'lucide-react';
 import ReceiptUploader from './ReceiptUploader';
+import { formatCurrency } from '@/lib/utils';
 
 export default function AddHoldingModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,18 +71,18 @@ export default function AddHoldingModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div 
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" 
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" 
         onClick={() => setIsOpen(false)}
       />
-      <div className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-amber-500/10 p-2 rounded-xl text-amber-500">
+            <div className="bg-amber-100 p-2 rounded-xl text-amber-600 shadow-sm">
               <Coins className="w-5 h-5" />
             </div>
-            <h2 className="text-xl font-bold text-slate-100">Add New Gold</h2>
+            <h2 className="text-xl font-black text-slate-800">Add New Gold</h2>
           </div>
-          <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900 transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -92,9 +93,9 @@ export default function AddHoldingModal() {
         }}>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Type</label>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Type</label>
               <select 
-                className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors appearance-none"
                 value={formData.type}
                 onChange={(e) => {
                   const newType = e.target.value;
@@ -116,9 +117,9 @@ export default function AddHoldingModal() {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Weight (g)</label>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Weight (g)</label>
               <select 
-                className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors appearance-none"
                 value={formData.weight}
                 onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
               >
@@ -133,12 +134,12 @@ export default function AddHoldingModal() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Purchase Price (Rp)</label>
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Purchase Price (Rp)</label>
             <input 
               type="text" 
-              className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-amber-500/50 transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors"
               placeholder="e.g. 1,500,000"
-              value={formData.buyPrice ? formData.buyPrice.toLocaleString('en-US') : ''}
+              value={formData.buyPrice ? formatCurrency(formData.buyPrice) : ''}
               onChange={(e) => {
                 const rawVal = e.target.value.replace(/[^0-9]/g, '');
                 const num = parseInt(rawVal, 10);
@@ -149,19 +150,19 @@ export default function AddHoldingModal() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Date</label>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Date</label>
               <input 
                 type="date" 
-                className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors"
                 value={formData.buyDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, buyDate: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Serial Number</label>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Serial Number</label>
               <input 
                 type="text" 
-                className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors"
                 placeholder="Optional"
                 value={formData.serialNumber}
                 onChange={(e) => setFormData(prev => ({ ...prev, serialNumber: e.target.value }))}
@@ -182,7 +183,7 @@ export default function AddHoldingModal() {
           <button 
             type="submit"
             disabled={mutation.isPending}
-            className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-xl shadow-[0_0_30px_rgba(245,158,11,0.1)] transition-all flex items-center justify-center gap-2"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-4 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
           >
             {mutation.isPending && <Loader2 className="w-5 h-5 animate-spin" />}
             Log Transaction

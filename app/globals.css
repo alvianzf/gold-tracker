@@ -1,13 +1,30 @@
-@import "tailwindcss";
-
 :root {
-  --background: #020617; /* slate-950 */
-  --foreground: #f8fafc; /* slate-50 */
+  --background: #f8fafc; /* slate-50 */
+  --foreground: #0f172a; /* slate-900 */
+  
+  --pastel-amber: #fff7ed;
+  --pastel-amber-solid: #ffedd5;
+  --pastel-indigo: #f5f3ff;
+  --pastel-indigo-solid: #e0e7ff;
+  --pastel-emerald: #f0fdf4;
+  --pastel-emerald-solid: #dcfce7;
+  --pastel-rose: #fff1f2;
+  --pastel-rose-solid: #fee2e2;
+  --pastel-slate: #f1f5f9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-pastel-amber: var(--pastel-amber);
+  --color-pastel-amber-solid: var(--pastel-amber-solid);
+  --color-pastel-indigo: var(--pastel-indigo);
+  --color-pastel-indigo-solid: var(--pastel-indigo-solid);
+  --color-pastel-emerald: var(--pastel-emerald);
+  --color-pastel-emerald-solid: var(--pastel-emerald-solid);
+  --color-pastel-rose: var(--pastel-rose);
+  --color-pastel-rose-solid: var(--pastel-rose-solid);
+  --color-pastel-slate: var(--pastel-slate);
 }
 
 body {

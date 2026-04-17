@@ -108,106 +108,101 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
-      >
-        <div className="flex items-center justify-between p-6 border-b border-white/5">
-          <h2 className="text-xl font-bold text-white">
-            {transaction ? 'Edit Transaction' : 'New Transaction'}
-          </h2>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl text-slate-400 transition-colors">
-            <X className="w-5 h-5" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div 
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" 
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-amber-100 p-2 rounded-xl text-amber-600 shadow-sm">
+              <Wallet className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-black text-slate-800">{transaction ? 'Edit Transaction' : 'New Transaction'}</h2>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-900 transition-colors">
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <Calendar className="w-3 h-3" /> Date
-              </label>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Date</label>
               <input
                 type="date"
                 required
                 value={formData.date}
                 onChange={e => setFormData({ ...formData, date: e.target.value })}
-                className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-slate-200 outline-none focus:border-amber-500/50 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium outline-none focus:border-amber-500 transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <Wallet className="w-3 h-3" /> Amount
-              </label>
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">Rp</span>
-                <input
-                  type="text"
-                  required
-                  placeholder="0"
-                  value={displayAmount}
-                  onChange={e => setDisplayAmount(formatInputCurrency(e.target.value))}
-                  className="w-full bg-slate-950 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-slate-200 outline-none focus:border-amber-500/50 transition-colors"
-                />
-              </div>
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Amount (Rp)</label>
+              <input 
+                type="text" 
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:outline-none focus:border-amber-500 transition-colors"
+                placeholder="0"
+                value={displayAmount}
+                onChange={e => setDisplayAmount(formatInputCurrency(e.target.value))}
+              />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Details (Optional)</label>
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Details (Optional)</label>
             <textarea
               placeholder="Add some notes about this transaction..."
               rows={2}
               value={formData.details}
               onChange={e => setFormData({ ...formData, details: e.target.value })}
-              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-slate-200 outline-none focus:border-amber-500/50 transition-colors resize-none text-sm"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 outline-none focus:border-amber-500 transition-colors resize-none text-sm"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Source</label>
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Source</label>
             <input
               type="text"
               required
               placeholder="e.g. Bank Account, Cash, e-Wallet"
               value={formData.source}
               onChange={e => setFormData({ ...formData, source: e.target.value })}
-              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-slate-200 outline-none focus:border-amber-500/50 transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 outline-none focus:border-amber-500 transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Type</label>
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Type</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, type: 'DEBIT' })}
-                className={`flex items-center justify-center gap-2 py-3 rounded-xl border transition-all ${
+                className={`py-3 rounded-xl font-black text-sm transition-all border ${
                   formData.type === 'DEBIT' 
-                    ? 'bg-rose-500/10 border-rose-500 text-rose-500' 
-                    : 'bg-slate-950 border-white/10 text-slate-400 hover:border-slate-700'
+                    ? 'bg-rose-100 border-rose-200 text-rose-700 shadow-sm' 
+                    : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
                 }`}
               >
-                <ArrowDownCircle className="w-4 h-4" /> Debit (Expense)
+                Expense
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, type: 'CREDIT' })}
-                className={`flex items-center justify-center gap-2 py-3 rounded-xl border transition-all ${
+                className={`py-3 rounded-xl font-black text-sm transition-all border ${
                   formData.type === 'CREDIT' 
-                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' 
-                    : 'bg-slate-950 border-white/10 text-slate-400 hover:border-slate-700'
+                    ? 'bg-emerald-100 border-emerald-200 text-emerald-700 shadow-sm' 
+                    : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
                 }`}
               >
-                <ArrowUpCircle className="w-4 h-4" /> Credit (Income)
+                Income
               </button>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <Tag className="w-3 h-3" /> Purpose
             </label>
             {!showCustomPurpose ? (
@@ -217,10 +212,10 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
                     key={p}
                     type="button"
                     onClick={() => setFormData({ ...formData, purpose: p })}
-                    className={`py-2 rounded-lg border text-sm transition-all ${
+                    className={`py-2 rounded-lg border text-sm font-bold transition-all ${
                       formData.purpose === p 
-                        ? 'bg-amber-500/10 border-amber-500 text-amber-500' 
-                        : 'bg-slate-950 border-white/10 text-slate-400 hover:border-slate-700'
+                        ? 'bg-amber-100 border-amber-200 text-amber-700' 
+                        : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
                     }`}
                   >
                     {p}
@@ -229,7 +224,7 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
                 <button
                   type="button"
                   onClick={() => setShowCustomPurpose(true)}
-                  className="py-2 rounded-lg border border-dashed border-white/20 text-slate-400 text-sm hover:border-white/40 transition-all col-span-2"
+                  className="py-2 rounded-lg border border-dashed border-slate-300 text-slate-500 text-sm hover:bg-slate-50 transition-all col-span-2"
                 >
                   + Add Custom Purpose
                 </button>
@@ -242,12 +237,12 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
                   placeholder="Enter purpose..."
                   value={customPurpose}
                   onChange={e => setCustomPurpose(e.target.value)}
-                  className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-slate-200 outline-none focus:border-amber-500/50"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-800 outline-none focus:border-amber-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowCustomPurpose(false)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 text-sm transition-colors"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 text-sm transition-colors"
                 >
                   Back
                 </button>
@@ -256,36 +251,36 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <ImageIcon className="w-3 h-3" /> Photo (Optional)
             </label>
             <div className="relative group">
               {formData.photoUrl ? (
-                <div className="relative h-32 w-full rounded-2xl overflow-hidden border border-white/10 bg-slate-950">
+                <div className="relative h-32 w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
                   <Image 
                     src={formData.photoUrl} 
                     alt="Preview" 
                     fill 
-                    className="object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                    className="object-cover opacity-80"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <button 
                       type="button"
                       onClick={() => setFormData({ ...formData, photoUrl: '', thumbnailUrl: '' })}
-                      className="bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold"
+                      className="bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm"
                     >
-                      Delete Photo
+                      Delete
                     </button>
                   </div>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center h-32 w-full rounded-2xl border-2 border-dashed border-white/5 bg-slate-950 hover:bg-white/5 hover:border-white/10 transition-all cursor-pointer">
+                <label className="flex flex-col items-center justify-center h-32 w-full rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100 transition-all cursor-pointer">
                   {uploading ? (
                     <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-slate-600 mb-2" />
-                      <span className="text-xs text-slate-500 font-medium">Click to upload receipt photo</span>
+                      <Upload className="w-8 h-8 text-slate-300 mb-2" />
+                      <span className="text-xs text-slate-400 font-bold">Click to upload receipt</span>
                     </>
                   )}
                   <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} disabled={uploading} />
@@ -294,15 +289,17 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading || uploading}
-            className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:hover:bg-amber-500 text-slate-950 font-bold py-4 rounded-2xl shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all flex items-center justify-center gap-2"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : transaction ? 'Update Transaction' : 'Save Transaction'}
-          </button>
+          <div className="p-6 border-t border-slate-100 bg-slate-50 -mx-6 -mb-6">
+            <button
+              type="submit"
+              disabled={loading || uploading}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-4 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : transaction ? 'Update Transaction' : 'Save Transaction'}
+            </button>
+          </div>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }
