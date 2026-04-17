@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { MoreVertical } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import Portal from './Portal';
 
 interface Action {
   label: string;
@@ -17,7 +19,9 @@ interface ActionMenuProps {
 
 export default function ActionMenu({ actions }: ActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -29,45 +33,72 @@ export default function ActionMenu({ actions }: ActionMenuProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleOpen = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      // Position below the button, aligned to the right (default)
+      setCoords({
+        top: rect.bottom + window.scrollY,
+        left: rect.right + window.scrollX - 224, // 224px is w-56
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative inline-block" ref={menuRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-900 transition-colors"
+        ref={buttonRef}
+        onClick={handleOpen}
+        className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 hover:bg-gold/10 text-slate-500 hover:text-gold transition-all border border-white/10 hover:border-gold/30"
       >
-        <MoreVertical className="w-4 h-4" />
+        <MoreVertical className="w-5 h-5" />
       </button>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            transition={{ duration: 0.1 }}
-            className="absolute right-0 mt-2 w-48 rounded-xl bg-white border border-slate-200 shadow-xl z-50 overflow-hidden"
-          >
-            <div className="py-1">
-              {actions.map((action, index) => {
-                const Icon = action.icon;
-                return (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      action.onClick();
-                      setIsOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-colors hover:bg-slate-50 ${
-                      action.variant === 'danger' ? 'text-rose-600' : 'text-slate-700'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {action.label}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
+          <Portal>
+            <div className="fixed inset-0 z-[1000]" onClick={() => setIsOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -5 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -5 }}
+              transition={{ duration: 0.1 }}
+              style={{
+                top: coords.top + 12,
+                left: coords.left,
+                position: 'absolute',
+              }}
+              className="w-56 glass p-1.5 shadow-2xl z-[1001] overflow-hidden"
+            >
+              <div className="glass bg-slate-900 border-white/5 py-3">
+                {actions.map((action, index) => {
+                  const Icon = action.icon;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        action.onClick();
+                        setIsOpen(false);
+                      }}
+                      className={cn(
+                        "w-full flex items-center gap-4 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative group",
+                        action.variant === 'danger' ? 'text-rose-500 hover:bg-rose-500/10' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      )}
+                    >
+                      <div className={cn(
+                        "transition-transform group-hover:scale-110",
+                        action.variant === 'danger' ? 'text-rose-500' : 'text-gold'
+                      )}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      {action.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </Portal>
         )}
       </AnimatePresence>
     </div>

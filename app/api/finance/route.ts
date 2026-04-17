@@ -48,6 +48,21 @@ export async function POST(req: Request) {
       },
     });
 
+    // Auto-save purpose for future suggestions
+    await prisma.financePurpose.upsert({
+      where: {
+        name_userId: {
+          name: purpose,
+          userId: user.id as string,
+        },
+      },
+      update: {},
+      create: {
+        name: purpose,
+        userId: user.id as string,
+      },
+    });
+
     return NextResponse.json(transaction);
   } catch (error) {
     console.error('Error creating finance transaction:', error);

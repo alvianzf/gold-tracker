@@ -1,34 +1,126 @@
+@import "tailwindcss";
+
 :root {
-  --background: #f8fafc; /* slate-50 */
-  --foreground: #0f172a; /* slate-900 */
+  --background: #000000;
+  --foreground: #f8fafc; /* slate-50 */
   
-  --pastel-amber: #fff7ed;
-  --pastel-amber-solid: #ffedd5;
-  --pastel-indigo: #f5f3ff;
-  --pastel-indigo-solid: #e0e7ff;
-  --pastel-emerald: #f0fdf4;
-  --pastel-emerald-solid: #dcfce7;
-  --pastel-rose: #fff1f2;
-  --pastel-rose-solid: #fee2e2;
-  --pastel-slate: #f1f5f9;
+  --gold-accent: #fbbf24; /* amber-400 */
+  --gold-accent-strong: #f59e0b; /* amber-500 */
+  
+  --glass-bg: rgba(15, 23, 42, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2.5rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-pastel-amber: var(--pastel-amber);
-  --color-pastel-amber-solid: var(--pastel-amber-solid);
-  --color-pastel-indigo: var(--pastel-indigo);
-  --color-pastel-indigo-solid: var(--pastel-indigo-solid);
-  --color-pastel-emerald: var(--pastel-emerald);
-  --color-pastel-emerald-solid: var(--pastel-emerald-solid);
-  --color-pastel-rose: var(--pastel-rose);
-  --color-pastel-rose-solid: var(--pastel-rose-solid);
-  --color-pastel-slate: var(--pastel-slate);
+  --color-gold: var(--gold-accent);
+  --color-gold-strong: var(--gold-accent-strong);
+  
+  --radius-doodle: var(--radius-2xl);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+
+  --shadow-gold: 0 10px 40px -10px rgba(251, 191, 36, 0.2);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: inherit;
+  /* Dark Canvas with Gold Doodles */
+  background-image: 
+    /* Level 1: Grain Noise */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E"),
+    /* Level 2: Gold Artist Doodles */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,200 Q150,150 200,200 T300,200' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='1.5'/%3E%3Ccircle cx='800' cy='150' r='30' fill='none' stroke='%23fbbf24' stroke-opacity='0.1' stroke-width='1'/%3E%3Cpath d='M100,800 L150,850 L200,800' fill='none' stroke='%23fbbf24' stroke-opacity='0.1' stroke-width='1.5'/%3E%3Cpath d='M850,700 Q900,750 850,800' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='1.5'/%3E%3Ccircle cx='400' cy='500' r='100' fill='none' stroke='%23fbbf24' stroke-opacity='0.05' stroke-width='0.8'/%3E%3Cpath d='M600,600 C650,550 750,550 800,600' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='2'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: 200px 200px, 1000px 1000px;
+}
+
+/* Base Glassmorphism Class */
+.glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-3xl) !important;
+}
+
+/* Navigation Specifics */
+.nav-glass {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* DROPDOWN, MODAL, & ALERT - Enhanced Glass */
+.keep-bg, 
+select, 
+option, 
+[role="listbox"],
+[role="menu"],
+[role="dialog"],
+.swal2-popup,
+.modal-content {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  color: #f8fafc !important; 
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.swal2-title, .swal2-html-container {
+  color: #f8fafc !important;
+}
+
+@layer utilities {
+  .border-pencil {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .border-pencil-strong {
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    animation: scroll 40s linear infinite;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(251, 191, 36, 0.2);
+    border-radius: 20px;
+  }
+}
+
+/* SweetAlert2 Glass Re-skin */
+.swal2-popup.doodle-swal {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(251, 191, 36, 0.3) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: 0 20px 60px -15px rgba(251, 191, 36, 0.1) !important;
+  color: #f8fafc !important;
+}
+.swal2-confirm {
+  background: #fbbf24 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+.swal2-cancel {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94a3b8 !important;
 }

@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Wallet, Target, Percent } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 
 export default function PortfolioStats() {
   const { data: summary, isLoading } = useQuery({
@@ -22,50 +22,64 @@ export default function PortfolioStats() {
     },
   });
 
-  if (isLoading) return <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="h-32 bg-slate-900/50 rounded-3xl animate-pulse" />
-    ))}
-  </div>;
+  if (isLoading) return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="h-48 bg-white/5 rounded-3xl animate-pulse" />
+      ))}
+    </div>
+  );
 
   const stats = [
     {
       label: 'Portfolio Value',
       value: `Rp ${formatCurrency(summary?.totalValue)}`,
       icon: Wallet,
-      color: 'text-amber-500',
-      bg: 'bg-amber-500/10',
+      color: 'text-white',
+      bg: 'bg-gold/10',
+      accent: 'text-gold'
     },
     {
       label: 'Total Profit',
-      value: `Rp ${formatCurrency(summary?.totalProfit)}`,
+      value: `${(summary?.totalProfit ?? 0) >= 0 ? '+' : ''}Rp ${formatCurrency(summary?.totalProfit)}`,
       icon: Target,
-      color: (summary?.totalProfit ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500',
-      bg: (summary?.totalProfit ?? 0) >= 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10',
+      color: (summary?.totalProfit ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400',
+      bg: 'bg-slate-900',
+      accent: (summary?.totalProfit ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'
     },
     {
-      label: 'Total P/L %',
-      value: `${summary?.profitPercent.toFixed(2)}%`,
+      label: 'Performance Index',
+      value: `${(summary?.profitPercent ?? 0) >= 0 ? '+' : ''}${summary?.profitPercent.toFixed(2)}%`,
       icon: Percent,
-      color: (summary?.profitPercent ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500',
-      bg: (summary?.profitPercent ?? 0) >= 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10',
+      color: (summary?.profitPercent ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400',
+      bg: 'bg-slate-900',
+      accent: (summary?.profitPercent ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
       {stats.map((stat, i) => (
-        <div key={i} className="relative overflow-hidden group bg-white border border-slate-200 rounded-3xl p-6 transition-all hover:bg-slate-50 shadow-sm">
-          <div className="relative z-10 flex flex-col gap-4">
-            <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
-              <stat.icon className="w-6 h-6" />
+        <div key={i} className="glass p-1 group">
+          <div className="glass bg-white/5 p-10 flex flex-col justify-between h-full border-white/5 group-hover:border-gold/20 transition-all">
+            <div className="flex items-center gap-5 mb-10">
+              <div className={cn(
+                "w-14 h-14 rounded-2xl border flex items-center justify-center transition-all group-hover:scale-110 shadow-lg",
+                stat.bg,
+                stat.accent === 'text-gold' ? 'border-gold/20' : 'border-white/10',
+                stat.accent
+              )}>
+                <stat.icon className="w-7 h-7" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">{stat.label}</span>
+                <span className="text-[9px] font-bold text-gold/40 uppercase tracking-widest">Global Asset View</span>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <p className={`text-2xl font-black ${stat.color} mt-1`}>{stat.value}</p>
+            <div className={cn("text-4xl font-bold tracking-tighter drop-shadow-xl", stat.color)}>
+              {stat.value}
             </div>
           </div>
-          <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${stat.bg} rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity`} />
         </div>
       ))}
     </div>

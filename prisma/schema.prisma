@@ -129,6 +129,17 @@ model User {
   summaries           DailyPortfolioSummary[]
   financeTransactions FinanceTransaction[]
   aiSuggestions       AiSuggestion[]
+  financePurposes     FinancePurpose[]
+}
+
+model FinancePurpose {
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([name, userId])
 }
 
 enum Role {

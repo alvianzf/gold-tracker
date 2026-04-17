@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Upload, X, File as FileIcon, Loader2 } from 'lucide-react';
+import { Upload, X, File as FileIcon, Loader2, Eye, Trash2 } from 'lucide-react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface ReceiptUploaderProps {
   receiptUrl: string;
@@ -73,14 +74,14 @@ export default function ReceiptUploader({ receiptUrl, onUploadSuccess, onRemove,
   if (receiptUrl) {
     return (
       <div className="space-y-4">
-        <div className="relative group rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 aspect-video">
-          <Image src={receiptUrl} alt="Receipt Preview" fill className="object-cover" />
-          <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+        <div className="relative group overflow-hidden border border-white/10 bg-slate-900/60 rounded-2xl aspect-video">
+          <Image src={receiptUrl} alt="Receipt Preview" fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
             {allowView && (
               <button
                 type="button"
                 onClick={() => window.open(receiptUrl, '_blank')}
-                className="p-2 bg-white rounded-xl text-slate-950 hover:bg-amber-100 transition-colors shadow-lg"
+                className="w-12 h-12 rounded-full bg-white/10 hover:bg-gold text-white hover:text-black flex items-center justify-center transition-all shadow-xl hover:scale-110"
               >
                 <Eye className="w-5 h-5" />
               </button>
@@ -88,7 +89,7 @@ export default function ReceiptUploader({ receiptUrl, onUploadSuccess, onRemove,
             <button
               type="button"
               onClick={onRemove}
-              className="p-2 bg-rose-500 rounded-xl text-white hover:bg-rose-600 transition-colors shadow-lg"
+              className="w-12 h-12 rounded-full bg-rose-500/80 hover:bg-rose-600 text-white flex items-center justify-center transition-all shadow-xl hover:scale-110"
             >
               <Trash2 className="w-5 h-5" />
             </button>
@@ -98,20 +99,20 @@ export default function ReceiptUploader({ receiptUrl, onUploadSuccess, onRemove,
     );
   }
 
-  // Upload state
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative flex flex-col items-center justify-center w-full min-h-[160px] border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 
+        className={`relative flex flex-col items-center justify-center w-full min-h-[180px] border-2 border-dashed rounded-3xl cursor-pointer transition-all duration-500 group overflow-hidden
           ${isDragging 
-            ? 'border-amber-500 bg-amber-500/10' 
-            : 'border-white/10 bg-slate-950 hover:bg-slate-900 hover:border-amber-500/50'
+            ? 'border-gold bg-gold/10' 
+            : 'border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-gold/30'
           }`}
       >
+        <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
         <input 
           type="file" 
           ref={fileInputRef}
@@ -121,25 +122,29 @@ export default function ReceiptUploader({ receiptUrl, onUploadSuccess, onRemove,
         />
         
         {isUploading ? (
-          <div className="flex flex-col items-center gap-3 text-amber-500">
-            <Loader2 className="w-8 h-8 animate-spin" />
-            <span className="text-sm font-medium">Uploading...</span>
+          <div className="flex flex-col items-center gap-4 text-gold">
+            <Loader2 className="w-10 h-10 animate-spin" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Syncing Receipt...</span>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-3 text-slate-400 p-6 text-center">
-            <div className="p-3 bg-slate-800 rounded-full text-slate-300">
+          <div className="flex flex-col items-center gap-6 p-8 text-center relative z-10 transition-transform duration-500 group-hover:scale-105">
+            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 border border-white/10 group-hover:bg-gold/10 group-hover:text-gold group-hover:border-gold/20 transition-all">
               <Upload className="w-6 h-6" />
             </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-slate-300">
-                Click to upload <span className="text-slate-500 font-normal">or drag and drop</span>
+            <div className="space-y-2">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] group-hover:text-white transition-colors">
+                Drop Document <span className="text-slate-600 font-bold group-hover:text-gold/60">— or Click to Access</span>
               </p>
-              <p className="text-xs text-slate-500">PDF, PNG, JPG or JPEG allowed</p>
+              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">PDF, PNG, JPG (MAX 5MB)</p>
             </div>
           </div>
         )}
       </div>
-      {error && <p className="text-rose-500 text-xs font-semibold text-center">{error}</p>}
+      {error && (
+        <p className="text-rose-400 text-[10px] font-black uppercase tracking-widest text-center animate-in shake-in-1 duration-500">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

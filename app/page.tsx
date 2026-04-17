@@ -1,141 +1,253 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, ArrowRight, Shield, BarChart3, Wallet, Coins, Smartphone, Zap } from 'lucide-react';
+import { ArrowRight, Shield, BarChart3, Wallet, Coins, Zap, CheckCircle, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { useI18n } from '@/context/LanguageContext';
 
 export default function LandingPage() {
+  const { t } = useI18n();
+
   const features = [
     {
       icon: Coins,
-      title: 'Gold Portfolio',
-      description: 'Track Antam, UBS, and Galeri 24 holdings with real-time spot prices and P/L analytics.',
-      color: 'text-amber-500',
-      bg: 'bg-amber-500/10',
+      title: t('nav.gold'),
+      description: t('hero.goldDesc'),
+      color: 'text-amber-600',
+      bg: 'bg-amber-100',
+      border: 'border-pencil',
     },
     {
       icon: Wallet,
-      title: 'Finance Tracker',
-      description: 'Monitor expenses and income with category-wise breakdown and receipt uploads.',
-      color: 'text-indigo-500',
-      bg: 'bg-indigo-500/10',
+      title: t('nav.finance'),
+      description: t('hero.financeDesc'),
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-100',
+      border: 'border-pencil',
     },
     {
       icon: Zap,
-      title: 'AI Insights',
-      description: 'Get daily financial advice and spending analysis powered by SumoPod AI.',
-      color: 'text-emerald-500',
-      bg: 'bg-emerald-500/10',
+      title: t('nav.analytics'),
+      description: t('hero.analyticsDesc'),
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-100',
+      border: 'border-pencil',
     },
     {
       icon: Shield,
-      title: 'Secure & Private',
-      description: 'Your financial data is encrypted and protected with industry-standard security.',
-      color: 'text-rose-500',
-      bg: 'bg-rose-500/10',
+      title: t('hero.secureTitle'),
+      description: t('hero.secureDesc'),
+      color: 'text-rose-600',
+      bg: 'bg-rose-100',
+      border: 'border-pencil',
     },
   ];
 
-  return (
-    <div className="flex flex-col gap-24 pb-20 overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative pt-20 flex flex-col items-center text-center gap-8">
-        {/* Glow Backgrounds */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-amber-500/10 blur-[120px] rounded-full -z-10" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/10 blur-[100px] rounded-full -z-10" />
+  const highlights = [
+    t('hero.highlights.goldTracking'),
+    t('hero.highlights.plVisual'),
+    t('hero.highlights.aiInsights'),
+    t('hero.highlights.userRole'),
+    t('hero.highlights.receiptStore'),
+    t('hero.highlights.auditTrail'),
+  ];
 
+  const mockTransactions = [
+    { name: 'Salary Deposit', category: 'Income', amount: 15000000, type: 'plus' },
+    { name: 'Grocery Run', category: 'Food & Drink', amount: 450000, type: 'minus' },
+    { name: 'Antam 5g Purchase', category: 'Gold', amount: 5200000, type: 'minus' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-32 pb-32 overflow-hidden bg-transparent">
+      {/* Hero Section */}
+      <section className="relative pt-12 flex flex-col items-center text-center gap-10 px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-md"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-2 rounded-full shadow-2xl backdrop-blur-md"
         >
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-xs font-bold uppercase tracking-widest text-slate-300">New: AI Financial Advisor</span>
+          <Coins className="w-4 h-4 text-gold" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/80">{t('hero.badge')}</span>
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl md:text-8xl font-black text-slate-100 tracking-tighter max-w-5xl leading-[1.1]"
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-7xl md:text-9xl font-bold text-white tracking-tighter max-w-5xl leading-[0.85] drop-shadow-2xl"
         >
-          Master Your Wealth with <span className="bg-gradient-to-tr from-amber-400 via-amber-200 to-white bg-clip-text text-transparent drop-shadow-sm">Precision</span>
+          {t('hero.title').split('Artistic Precision')[0]} <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-gold animate-shimmer">Elite Tracking</span>
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-2xl text-slate-300 max-w-3xl leading-relaxed font-medium"
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-xl md:text-2xl text-slate-400 max-w-3xl leading-relaxed font-medium"
         >
-          The all-in-one platform to track gold investments, manage personal finances, and get AI-driven insights to grow your net worth.
+          {t('hero.subtitle')}
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center gap-6 mt-8"
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-center gap-6 mt-4"
         >
           <Link
             href="/login"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-amber-500 hover:bg-amber-400 text-slate-950 px-10 py-5 rounded-[24px] font-black transition-all shadow-[0_0_40px_rgba(245,158,11,0.2)] hover:scale-105 active:scale-95"
+            className="group relative flex items-center gap-3 bg-gold hover:bg-gold-strong text-black font-bold px-14 py-6 rounded-3xl shadow-gold transition-all hover:scale-105 active:scale-95"
           >
-            Get Started Now <ArrowRight className="w-6 h-6" />
+            {t('hero.getStarted')} <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="/login"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-100 px-10 py-5 rounded-[24px] font-bold transition-all backdrop-blur-md hover:scale-105 active:scale-95"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-14 py-6 rounded-3xl backdrop-blur-xl transition-all hover:scale-105"
           >
-            Live Demo
+            {t('hero.signIn')}
           </Link>
         </motion.div>
 
-        {/* Mockup Preview */}
+        {/* Highlights */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 40 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-16 w-full max-w-6xl mx-auto px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="flex flex-wrap justify-center gap-4 mt-8"
         >
-          <div className="relative aspect-[16/9] rounded-[40px] border border-white/10 bg-slate-900 overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-950/80 z-10" />
-            <div className="flex h-full p-4 md:p-8 gap-4 overflow-hidden opacity-40">
-              {/* Fake UI Elements */}
-              <div className="w-64 h-full bg-slate-950 border border-white/5 rounded-3xl p-6 hidden md:block">
-                 <div className="w-32 h-4 bg-white/10 rounded-full mb-8" />
-                 {[...Array(5)].map((_, i) => (
-                   <div key={i} className="w-full h-10 bg-white/5 rounded-xl mb-3" />
-                 ))}
-              </div>
-              <div className="flex-1 flex flex-col gap-4">
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="h-32 bg-slate-950 border border-white/5 rounded-3xl" />
-                    ))}
-                 </div>
-                 <div className="flex-1 bg-slate-950 border border-white/5 rounded-3xl p-8">
-                    <div className="w-48 h-6 bg-white/10 rounded-full mb-8" />
-                    <div className="space-y-4">
-                      {[...Array(6)].map((_, i) => (
-                        <div key={i} className="w-full h-12 bg-white/5 rounded-2xl" />
-                      ))}
+          {highlights.map((h) => (
+            <span key={h} className="flex items-center gap-2 text-xs font-bold text-slate-300 bg-white/5 border border-white/5 px-6 py-3 rounded-2xl">
+              <CheckCircle className="w-4 h-4 text-gold" />
+              {h}
+            </span>
+          ))}
+        </motion.div>
+
+        {/* High-Fidelity App Mockup — 1:1 Structural Replica */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: 40 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="mt-20 w-full max-w-6xl mx-auto px-4"
+        >
+          <div className="glass p-1.5 shadow-gold/20">
+            <div className="glass bg-slate-950/80 p-8 md:p-12 flex flex-col gap-12 border-white/5 overflow-hidden">
+               {/* 1:1 Dashboard Header Mockup */}
+               <header className="glass-header p-10 flex flex-col md:flex-row md:items-center justify-between gap-10 group">
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-center gap-3 text-gold">
+                      <div className="bg-gold/10 p-2 rounded-xl border border-gold/20 group-hover:bg-gold group-hover:text-black transition-all">
+                        <Wallet className="w-6 h-6" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">{t('hero.mockup.activeLedger')}</span>
                     </div>
-                 </div>
-              </div>
-            </div>
-            
-            {/* Real Screenshot Link overlay or text */}
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-               <div className="bg-slate-950/80 backdrop-blur-xl border border-white/10 px-8 py-4 rounded-3xl flex items-center gap-4 shadow-2xl scale-75 md:scale-100">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center">
-                    <Smartphone className="w-6 h-6 text-slate-950" />
+                    <h2 className="text-6xl font-black tracking-tighter text-white">VAULT<span className="text-gold">CORE</span></h2>
+                    <p className="text-slate-400 max-w-md text-base font-bold uppercase tracking-widest opacity-60">{t('hero.mockup.systemVersion')}</p>
                   </div>
-                  <div className="text-left">
-                    <p className="text-white font-bold text-lg">Intuitive Dashboard</p>
-                    <p className="text-slate-400 text-sm">Visualize your growth seamlessly.</p>
+                  <div className="flex items-center gap-4">
+                    <div className="px-10 py-5 bg-gold rounded-2xl text-black font-black text-[10px] uppercase tracking-[0.2em] shadow-gold hover:scale-105 transition-transform">{t('hero.mockup.ingestAsset')}</div>
+                  </div>
+               </header>
+
+               {/* 1:1 Daily Insight Mockup */}
+               <div className="bg-gradient-to-r from-gold/20 to-transparent border border-gold/20 rounded-3xl p-10 flex items-center justify-between group cursor-pointer hover:bg-gold/25 transition-all shadow-inner">
+                  <div className="flex items-center gap-8">
+                    <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-black shadow-gold animate-pulse relative">
+                        <div className="absolute inset-0 rounded-full bg-gold animate-ping opacity-20" />
+                        <Zap className="w-8 h-8" />
+                    </div>
+                    <div className="text-left">
+                        <p className="text-[10px] font-black text-gold uppercase tracking-[0.4em] mb-2">{t('hero.mockup.dailyInsights')}</p>
+                        <p className="text-xl font-bold text-white italic leading-tight tracking-tight">"Your gold reserves have increased by 4.2% this week. Total valuation up Rp 2.4M."</p>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 rounded-full border border-gold/20 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-black transition-all">
+                    <ArrowRight className="w-6 h-6" />
+                  </div>
+               </div>
+
+               {/* 1:1 Visual Analytics Mockup */}
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 text-left">
+                  <div className="lg:col-span-2 glass bg-slate-900/60 p-10 border-white/5 h-[450px] flex flex-col shadow-inner">
+                     <div className="flex items-center justify-between mb-12">
+                        <div className="flex items-center gap-5">
+                          <div className="bg-gold/10 p-4 rounded-2xl text-gold border border-gold/20">
+                              <BarChart3 className="w-7 h-7" />
+                          </div>
+                           <div>
+                               <h4 className="text-xl font-black text-white tracking-tight uppercase">{t('hero.mockup.performanceMetrics')}</h4>
+                               <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">{t('hero.mockup.temporalValuation')}</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="flex-1 flex items-end justify-between gap-5 px-4 pb-4">
+                        {[40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => (
+                           <div key={i} className="flex-1 flex flex-col gap-3 group cursor-pointer h-full justify-end">
+                              <div className="w-full bg-white/[0.03] rounded-t-xl relative overflow-hidden h-full">
+                                <motion.div 
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${h}%` }}
+                                  transition={{ duration: 1, delay: 0.8 + (i * 0.05) }}
+                                  className="absolute bottom-0 left-0 right-0 bg-gold/40 border-t border-gold group-hover:bg-gold/60 transition-all shadow-gold/20"
+                                />
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-8">
+                    <div className="glass bg-slate-900/60 p-10 border-white/5 group hover:border-gold/40 transition-all shadow-inner">
+                       <div className="flex items-center gap-5 mb-8">
+                         <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 border border-white/10 group-hover:bg-gold group-hover:text-black transition-all">
+                           <Wallet className="w-7 h-7" />
+                         </div>
+                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">{t('finance.totalBalance')}</span>
+                       </div>
+                       <div className="text-5xl font-black text-white tracking-tighter drop-shadow-2xl">Rp 42.1M</div>
+                    </div>
+                    <div className="glass bg-gold/5 p-10 border-gold/20 group hover:bg-gold/10 transition-all shadow-inner">
+                       <div className="flex items-center gap-5 mb-8">
+                         <div className="w-14 h-14 rounded-2xl bg-gold flex items-center justify-center text-black shadow-gold">
+                           <TrendingUp className="w-7 h-7" />
+                         </div>
+                         <span className="text-[10px] font-black text-gold uppercase tracking-[0.3em]">{t('finance.income')}</span>
+                       </div>
+                       <div className="text-5xl font-black text-white tracking-tighter">+ Rp 15M</div>
+                    </div>
+                  </div>
+               </div>
+
+               {/* 1:1 Transaction Table Mockup */}
+                <div className="glass bg-slate-900/40 border-white/5 overflow-hidden shadow-2xl">
+                   <div className="px-10 py-10 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                      <h4 className="text-[10px] font-black text-white uppercase tracking-[0.5em]">{t('hero.mockup.registry')}</h4>
+                      <Link href="/finance" className="text-[10px] font-black text-gold uppercase tracking-[0.3em] flex items-center gap-3 hover:translate-x-2 transition-transform">{t('hero.mockup.accessLedgers')} <ArrowRight className="w-5 h-5" /></Link>
+                   </div>
+                  <div className="divide-y divide-white/5">
+                      {[
+                        { name: t('hero.mockup.corporateRetainer'), cat: t('hero.mockup.liquidityInbound'), val: '15,000,000', type: 'plus', bg: 'bg-emerald-500/10', color: 'text-emerald-400', icon: TrendingUp },
+                        { name: t('hero.mockup.antamBullion'), cat: t('hero.mockup.assetAcquisition'), val: '5,200,000', type: 'minus', bg: 'bg-gold/10', color: 'text-gold', icon: Coins },
+                        { name: t('hero.mockup.cloudTerminal'), cat: t('hero.mockup.operationalCost'), val: '150,000', type: 'minus', bg: 'bg-white/5', color: 'text-slate-400', icon: Shield }
+                      ].map((tx, i) => (
+                       <div key={i} className="flex items-center justify-between p-10 hover:bg-white/[0.04] transition-all group cursor-default">
+                          <div className="flex items-center gap-8">
+                             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border border-white/5 ${tx.bg} ${tx.color} group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg`}>
+                                <tx.icon className="w-8 h-8" />
+                             </div>
+                             <div className="text-left">
+                                <p className="text-2xl font-black text-white leading-none mb-3 tracking-tight">{tx.name}</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">{tx.cat}</p>
+                             </div>
+                          </div>
+                          <div className={`text-3xl font-black tracking-tighter ${tx.type === 'plus' ? 'text-emerald-400' : 'text-white'} group-hover:scale-110 transition-transform origin-right`}>
+                             {tx.type === 'plus' ? '+' : '-'} Rp {tx.val}
+                          </div>
+                       </div>
+                     ))}
                   </div>
                </div>
             </div>
@@ -144,55 +256,54 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="max-w-7xl mx-auto px-4 w-full">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-3xl md:text-5xl font-black text-white">Built for <span className="text-amber-500">Growth</span></h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">Everything you need to manage your assets in one place, optimized for performance and ease of use.</p>
+      <section className="max-w-7xl mx-auto px-4 w-full text-center">
+        <div className="mb-24 space-y-6">
+          <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter">
+            {t('hero.featureTitle').split('Peak')[0]} <span className="text-gold">Peak</span> Performance
+          </h2>
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">{t('hero.featureSubtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, i) => {
             const Icon = feature.icon;
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-slate-900/50 border border-white/5 p-8 rounded-[32px] hover:bg-slate-800/50 hover:border-white/10 transition-all group"
+                transition={{ delay: i * 0.1 }}
+                className="glass p-10 hover:border-gold/30 hover:-translate-y-2 transition-all duration-300 group"
               >
-                <div className={`${feature.bg} ${feature.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <Icon className="w-8 h-8" />
+                <div className="w-16 h-16 rounded-3xl bg-gold/10 flex items-center justify-center mb-10 border border-gold/20 group-hover:bg-gold group-hover:text-black transition-all">
+                  <Icon className="w-8 h-8 text-gold group-hover:text-black" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
-                  {feature.description}
-                </p>
+                <h3 className="text-2xl font-bold text-white mb-4 tracking-tight text-left">{feature.title}</h3>
+                <p className="text-slate-400 text-base font-medium leading-relaxed text-left">{feature.description}</p>
               </motion.div>
             );
           })}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 w-full h-[400px]">
-        <div className="relative h-full w-full rounded-[40px] bg-gradient-to-br from-indigo-600 to-indigo-900 overflow-hidden flex flex-col items-center justify-center text-center px-8 shadow-2xl">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 relative z-10">Ready to secure your future?</h2>
-          <p className="text-indigo-100 mb-10 text-lg md:text-xl max-w-xl relative z-10">Join thousands of users tracking their wealth with precision every single day.</p>
+      {/* CTA */}
+      <section className="max-w-7xl mx-auto px-4 w-full h-[600px]">
+        <div className="glass h-full p-20 flex flex-col items-center justify-center text-center gap-10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gold opacity-[0.03] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+          <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter relative z-10 leading-[0.9]">
+            {t('hero.readyTitle')}
+          </h2>
+          <p className="text-slate-400 max-w-2xl text-xl font-medium relative z-10">
+            {t('hero.readySubtitle')}
+          </p>
           <Link
             href="/register"
-            className="flex items-center gap-2 bg-white text-indigo-900 px-10 py-5 rounded-3xl font-black text-lg hover:bg-slate-100 transition-all shadow-xl relative z-10"
+            className="flex items-center gap-4 bg-gold hover:bg-gold-strong text-black font-bold px-16 py-8 rounded-3xl shadow-gold transition-all hover:scale-105 active:scale-95 relative z-10"
           >
-            Create Your Account <ArrowRight className="w-6 h-6" />
+            {t('hero.createAccount')} <ArrowRight className="w-7 h-7" />
           </Link>
         </div>
-      </section>
-
-      {/* Small Quote Footer */}
-      <section className="text-center px-4">
-        <p className="text-slate-500 font-medium italic">"Precision is the foundation of wealth management."</p>
       </section>
     </div>
   );

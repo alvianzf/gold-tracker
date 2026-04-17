@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
@@ -21,46 +20,48 @@ export default function PriceTicker() {
 
   if (!prices || prices.length === 0 || pathname === '/login') return null;
 
-  const duplicatedItems = [...prices, ...prices, ...prices, ...prices, ...prices];
+  // Duplicate enough times to ensure the scroll looks seamless
+  const duplicatedItems = [...prices, ...prices, ...prices, ...prices, ...prices, ...prices];
 
   return (
-    <div className="h-8 bg-amber-50 border-b border-amber-100 flex overflow-hidden whitespace-nowrap items-center w-full">
-      <motion.div
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ 
-          duration: 30, 
-          repeat: Infinity, 
-          ease: "linear" 
-        }}
-        className="flex w-max"
+    <div className="h-10 bg-black border-y border-white/5 flex overflow-hidden whitespace-nowrap items-center w-full z-30 shadow-2xl relative">
+      <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-black to-transparent z-10" />
+      <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-black to-transparent z-10" />
+      
+      <div
+        className="flex w-max animate-scroll"
+        style={{ willChange: 'transform' }}
       >
-        <div className="flex gap-12 items-center px-6 pr-12">
-          {duplicatedItems.map((item: { id: string; type: string; priceBuy: number; trend: 'up' | 'down' | 'stable' }, i) => (
-            <div key={`set1-${item.id}-${i}`} className="flex items-center gap-2 text-[11px] font-semibold tracking-wider">
-              <span className="text-amber-600 uppercase">{item.type}</span>
-              <span className="text-slate-700">
-                Rp {formatCurrency(item.priceBuy)}
-              </span>
-              {item.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-600" />}
-              {item.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-600" />}
-              {item.trend === 'stable' && <Minus className="w-3 h-3 text-slate-400 opacity-60" />}
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-12 items-center px-6 pr-12">
-          {duplicatedItems.map((item: { id: string; type: string; priceBuy: number; trend: 'up' | 'down' | 'stable' }, i) => (
-            <div key={`set2-${item.id}-${i}`} className="flex items-center gap-2 text-[11px] font-semibold tracking-wider">
-              <span className="text-amber-500 uppercase">{item.type}</span>
-              <span className="text-slate-200">
-                Rp {formatCurrency(item.priceBuy)}
-              </span>
-              {item.trend === 'up' && <TrendingUp className="w-3 h-3 text-emerald-500" />}
-              {item.trend === 'down' && <TrendingDown className="w-3 h-3 text-rose-500" />}
-              {item.trend === 'stable' && <Minus className="w-3 h-3 text-slate-500 opacity-60" />}
-            </div>
-          ))}
-        </div>
-      </motion.div>
+        {/* Repeating groups to ensure seamless loop */}
+        {[...Array(4)].map((_, groupIdx) => (
+          <div key={groupIdx} className="flex gap-16 items-center px-8">
+            {prices.map((item: { id: string; type: string; priceBuy: number; trend: 'up' | 'down' | 'stable' }, i: number) => (
+              <div key={`${groupIdx}-${item.id}-${i}`} className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] relative group">
+                <span className="text-gold uppercase group-hover:text-white transition-colors">{item.type}</span>
+                <span className="text-slate-400 font-bold tracking-tighter text-[12px] group-hover:text-white transition-colors">
+                  Rp {formatCurrency(item.priceBuy)}
+                </span>
+                <div className="flex items-center justify-center">
+                  {item.trend === 'up' && (
+                    <div className="flex items-center gap-1 text-emerald-400">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span className="text-[8px] animate-pulse">BULLISH</span>
+                    </div>
+                  )}
+                  {item.trend === 'down' && (
+                    <div className="flex items-center gap-1 text-rose-400">
+                      <TrendingDown className="w-3.5 h-3.5" />
+                      <span className="text-[8px] animate-pulse text-rose-500">BEARISH</span>
+                    </div>
+                  )}
+                  {item.trend === 'stable' && <Minus className="w-3.5 h-3.5 text-slate-700 opacity-60" />}
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-white/10 ml-4" />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

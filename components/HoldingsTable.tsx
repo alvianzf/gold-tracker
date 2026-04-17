@@ -8,7 +8,8 @@ import Swal from 'sweetalert2';
 import ViewHoldingModal from './modals/ViewHoldingModal';
 import EditHoldingModal from './modals/EditHoldingModal';
 import ActionMenu from './ActionMenu';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
+import { useI18n } from '@/context/LanguageContext';
 
 interface Holding {
   id: string;
@@ -24,6 +25,7 @@ interface Holding {
 }
 
 export default function HoldingsTable() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [viewHolding, setViewHolding] = useState<Holding | null>(null);
   const [editHolding, setEditHolding] = useState<Holding | null>(null);
@@ -39,17 +41,17 @@ export default function HoldingsTable() {
   const handleDelete = (holding: Holding) => {
     Swal.fire({
       title: 'Delete Holding?',
-      text: `This will permanently remove your ${holding.weight}g ${holding.type} holding and all associated transactions. This action cannot be undone.`,
+      text: `This will permanently remove your ${holding.weight}g ${holding.type} holding. This action cannot be undone.`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#f43f5e',
-      cancelButtonColor: '#334155',
-      confirmButtonText: 'Yes, Delete',
+      cancelButtonColor: '#1e293b',
+      confirmButtonText: 'Confirm Deletion',
       cancelButtonText: 'Cancel',
       background: '#0f172a',
-      color: '#f8fafc',
+      color: '#ffffff',
       customClass: {
-        popup: 'border border-white/10 rounded-3xl',
+        popup: 'glass border border-white/10 shadow-2xl',
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -60,26 +62,26 @@ export default function HoldingsTable() {
           queryClient.invalidateQueries({ queryKey: ['portfolio-summary'] });
 
           Swal.fire({
-            title: 'Deleted!',
-            text: 'The holding has been permanently removed.',
+            title: 'Expunged',
+            text: 'Asset record has been permanently removed.',
             icon: 'success',
             background: '#0f172a',
             color: '#f8fafc',
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#34d399',
             customClass: {
-              popup: 'border border-white/10 rounded-3xl',
+              popup: 'glass border border-white/10 shadow-2xl',
             }
           });
         } catch {
           Swal.fire({
-            title: 'Failed',
-            text: 'Could not delete the holding. Please try again.',
+            title: 'Critical Failure',
+            text: 'System could not process the deletion.',
             icon: 'error',
             background: '#0f172a',
             color: '#f8fafc',
             confirmButtonColor: '#f43f5e',
             customClass: {
-              popup: 'border border-white/10 rounded-3xl',
+              popup: 'glass border border-white/10 shadow-2xl',
             }
           });
         }
@@ -89,17 +91,17 @@ export default function HoldingsTable() {
 
   const handleSell = (holding: Holding) => {
     Swal.fire({
-      title: 'Execute Sell Order?',
-      text: `Are you sure you want to liquidate ${holding.weight}g of ${holding.type} at current market value (Rp ${formatCurrency(holding.currentValue)})?`,
+      title: 'Execute Liquidation?',
+      text: `Are you sure you want to exit ${holding.weight}g of ${holding.type} at Rp ${formatCurrency(holding.currentValue)}?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#f59e0b',
-      cancelButtonColor: '#334155',
-      confirmButtonText: 'Yes, Sell Now!',
+      confirmButtonColor: '#fbbf24',
+      cancelButtonColor: '#1e293b',
+      confirmButtonText: 'Execute Trade',
       background: '#0f172a',
-      color: '#f8fafc',
+      color: '#ffffff',
       customClass: {
-        popup: 'border border-white/10 rounded-3xl',
+        popup: 'glass border border-white/10 shadow-2xl',
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -110,26 +112,26 @@ export default function HoldingsTable() {
           queryClient.invalidateQueries({ queryKey: ['portfolio-history'] });
           
           Swal.fire({
-            title: 'Sold!',
+            title: 'Trade Executed',
             text: 'Your position has been completely liquidated.',
             icon: 'success',
             background: '#0f172a',
             color: '#f8fafc',
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#34d399',
             customClass: {
-              popup: 'border border-white/10 rounded-3xl',
+              popup: 'glass border border-white/10 shadow-2xl',
             }
           });
         } catch {
           Swal.fire({
-            title: 'Failed',
-            text: 'There was an issue processing the trade execution.',
+            title: 'Execution Error',
+            text: 'Failed to process the market sell order.',
             icon: 'error',
             background: '#0f172a',
             color: '#f8fafc',
             confirmButtonColor: '#f43f5e',
             customClass: {
-              popup: 'border border-white/10 rounded-3xl',
+              popup: 'glass border border-white/10 shadow-2xl',
             }
           });
         }
@@ -137,79 +139,94 @@ export default function HoldingsTable() {
     });
   };
 
-  if (isLoading) return <div className="animate-pulse space-y-4">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="h-16 bg-slate-900/50 rounded-xl" />
-    ))}
-  </div>;
+  if (isLoading) return (
+    <div className="space-y-6 p-8">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="h-16 bg-white/5 rounded-2xl animate-pulse" />
+      ))}
+    </div>
+  );
 
   if (!holdings?.length) return (
-    <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl bg-slate-900/20">
-      <p className="text-slate-400">No active holdings found.</p>
+    <div className="flex flex-col items-center justify-center py-32 border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.02]">
+      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/5">
+        <Tag className="w-8 h-8 text-slate-600" />
+      </div>
+      <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">{t('gold.noHoldings')}</p>
     </div>
   );
 
   return (
     <>
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-widest border-b border-slate-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold">Asset</th>
-              <th className="px-6 py-4 font-semibold">Weight</th>
-              <th className="px-6 py-4 font-semibold">Cost</th>
-              <th className="px-6 py-4 font-semibold">Current Value</th>
-              <th className="px-6 py-4 font-semibold text-right">P/L (%)</th>
-              <th className="px-6 py-4 font-semibold text-center">Sell</th>
-              <th className="px-6 py-4 font-semibold text-right">Actions</th>
+      <div className="overflow-x-auto rounded-3xl">
+        <table className="w-full text-left text-sm whitespace-nowrap lg:whitespace-normal border-separate border-spacing-0">
+          <thead>
+            <tr className="bg-white/[0.03]">
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.type')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.weight')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.buyPrice')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.totalValue')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('gold.profitValue')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.liquidity')}</th>
+              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('finance.actions')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-white/5">
             {holdings.map((holding) => (
-              <tr key={holding.id} className="hover:bg-slate-50 transition-colors group">
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 font-black">
+              <tr key={holding.id} className="hover:bg-white/[0.04] transition-all group">
+                <td className="px-8 py-8">
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-gold/20 flex items-center justify-center text-gold font-black text-xl shadow-lg group-hover:bg-gold group-hover:text-black transition-all">
                       {holding.type[0]}
                     </div>
-                    <span className="font-black text-slate-800">{holding.type}</span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-white text-lg tracking-tight leading-tight">{holding.type}</span>
+                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Digital Vault Record</span>
+                    </div>
                   </div>
                 </td>
-                <td className="px-6 py-5 text-slate-600 font-bold">{holding.weight}g</td>
-                <td className="px-6 py-5 text-slate-600 font-bold">Rp {formatCurrency(holding.buyPrice)}</td>
-                <td className="px-6 py-5 font-black text-slate-900">
-                  Rp {formatCurrency(holding.currentValue)}
+                <td className="px-8 py-8 text-center text-slate-100 font-black text-lg tracking-tight">{holding.weight}g</td>
+                <td className="px-8 py-8 text-slate-400 font-bold">Rp {formatCurrency(holding.buyPrice)}</td>
+                <td className="px-8 py-8">
+                  <span className="text-xl font-black text-white tracking-tighter drop-shadow-md">
+                    Rp {formatCurrency(holding.currentValue)}
+                  </span>
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className={`inline-flex items-center gap-1 font-black ${holding.pl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                    {holding.pl >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                <td className="px-8 py-8 text-right">
+                  <div className={cn(
+                    "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase border",
+                    holding.pl >= 0 
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                      : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  )}>
+                    {holding.pl >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
                     {holding.plPercent.toFixed(2)}%
                   </div>
                 </td>
-                <td className="px-6 py-5 text-center">
+                <td className="px-8 py-8 text-center">
                   <button 
                     onClick={() => handleSell(holding)}
-                    className="bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200 px-4 py-1.5 rounded-lg text-xs font-black transition-all inline-flex items-center gap-1.5 shadow-sm"
+                    className="flex items-center gap-3 bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 px-6 py-3 rounded-2xl text-[10px] font-black text-slate-400 hover:text-gold uppercase tracking-widest transition-all shadow-xl active:scale-95"
                   >
-                    <Tag className="w-3 h-3" /> Sell
+                    <Tag className="w-4 h-4" /> {t('gold.liquidity')}
                   </button>
                 </td>
-                <td className="px-6 py-5 text-right">
+                <td className="px-8 py-8 text-right">
                   <div className="flex justify-end">
                     <ActionMenu
                       actions={[
                         {
-                          label: 'View Details',
+                          label: t('gold.vaultDetails'),
                           icon: Eye,
                           onClick: () => setViewHolding(holding),
                         },
                         {
-                          label: 'Edit',
+                          label: t('gold.modifyRecord'),
                           icon: Pencil,
                           onClick: () => setEditHolding(holding),
                         },
                         {
-                          label: 'Delete',
+                          label: t('gold.purgeArchive'),
                           icon: Trash2,
                           variant: 'danger',
                           onClick: () => handleDelete(holding),

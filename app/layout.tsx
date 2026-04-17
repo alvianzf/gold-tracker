@@ -9,8 +9,9 @@ import ThemeEnforcer from '@/components/ThemeEnforcer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Gold Portfolio Tracker | Precision Wealth Management',
+  title: 'Gold Tracker | Precision Portfolio Management',
   description: 'Track your gold holdings (Antam, UBS, Galeri 24) with real-time P/L and historical price analytics.',
+  icons: { icon: '/logo.png' },
 };
 
 export default function RootLayout({
@@ -19,20 +20,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ colorScheme: 'light', background: '#f8fafc' }}>
-      <body 
-        className={`${inter.className} bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased`}
-        style={{ background: '#f8fafc', color: '#0f172a' }}
-      >
+    <html lang="en">
+      <body className={`${inter.className} text-white min-h-screen flex flex-col antialiased selection:bg-gold/30 selection:text-gold`}>
         <ThemeEnforcer />
         <Providers>
           <PriceTicker />
           <Navbar />
-          <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+          <main className="flex-1 w-full relative z-20">
             {children}
           </main>
-          <footer className="border-t border-slate-800 bg-slate-900/50 py-6 text-center text-slate-500 text-sm">
-            Created by <a href="https://alvianzf.id" target="_blank" rel="noopener noreferrer" className="text-amber-500 hover:text-amber-400 underline decoration-amber-500/30">alvianzf (alvianzf.id)</a>. &copy; {new Date().getFullYear()} Gold Tracker. Built for Precision.
+          <footer className="w-full relative z-20 border-t border-white/5 bg-black/40 backdrop-blur-3xl py-12 mt-32">
+            <div className="max-w-7xl mx-auto px-6 text-center space-y-4">
+              <div className="flex justify-center mb-8">
+                 <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center p-2 shadow-xl">
+                   <img src="/logo.png" alt="Gold Tracker" className="w-8 h-8 object-contain" />
+                 </div>
+              </div>
+              <p className="text-slate-500 text-sm font-medium tracking-widest uppercase">
+                Forged with Precision by <a href="https://alvianzf.id" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-white transition-colors">alvianzf.id</a>
+              </p>
+              <p className="text-[10px] text-slate-700 font-bold uppercase tracking-[0.4em]">
+                &copy; {new Date().getFullYear()} Gold Tracker Terminal — All Rights Reserved.
+              </p>
+            </div>
           </footer>
         </Providers>
       </body>

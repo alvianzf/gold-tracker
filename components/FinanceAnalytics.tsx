@@ -1,14 +1,14 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts';
 import { formatCurrency } from '@/lib/utils';
-import { TrendingUp, PieChart as PieChartIcon, ArrowRightLeft } from 'lucide-react';
+import { TrendingUp, PieChart as PieChartIcon, ArrowRightLeft, Filter, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { FinanceTransaction } from './FinanceTable';
 
 interface FinanceAnalyticsProps {
   transactions: FinanceTransaction[];
+  availableSources: string[];
+  availablePurposes: string[];
 }
 
 interface ChartItem {
@@ -24,15 +24,32 @@ interface ComparisonItem {
 
 const COLORS = ['#fbbf24', '#818cf8', '#34d399', '#fb7185', '#a78bfa', '#f472b6'];
 
-export default function FinanceAnalytics({ transactions }: FinanceAnalyticsProps) {
+export default function FinanceAnalytics({ 
+  transactions, 
+  availableSources = [], 
+  availablePurposes = [] 
+}: FinanceAnalyticsProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [activeSource, setActiveSource] = useState<string>('ALL');
+  const [activePurpose, setActivePurpose] = useState<string>('ALL');
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  const sources = useMemo(() => ['ALL', ...availableSources.sort()], [availableSources]);
+  const purposes = useMemo(() => ['ALL', ...availablePurposes.sort()], [availablePurposes]);
+
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter(t => 
+      (activeSource === 'ALL' || t.source === activeSource) &&
+      (activePurpose === 'ALL' || t.purpose === activePurpose)
+    );
+  }, [transactions, activeSource, activePurpose]);
+
   // Aggregate data for Pie Chart (Expense by Purpose)
-  const expensesByPurpose = transactions
+  const expensesByPurpose = filteredTransactions
     .filter(tx => tx.type === 'DEBIT')
     .reduce((acc: ChartItem[], tx) => {
       const existing = acc.find(item => item.name === tx.purpose);
@@ -44,143 +61,207 @@ export default function FinanceAnalytics({ transactions }: FinanceAnalyticsProps
       return acc;
     }, []);
 
-  // Aggregate data for Bar Chart (Income vs Expense over time/last 6 months or days)
-  // For simplicity, let's group by date
-  const comparisonData = transactions.reduce((acc: ComparisonItem[], tx) => {
-    const date = new Date(tx.date).toLocaleDateString('id-ID', { month: 'short', day: '2-digit' });
-    const existing = acc.find(item => item.date === date);
-    if (existing) {
-      if (tx.type === 'CREDIT') existing.income += tx.amount;
-      else existing.expense += tx.amount;
-    } else {
-      acc.push({ 
-        date, 
-        income: tx.type === 'CREDIT' ? tx.amount : 0, 
-        expense: tx.type === 'DEBIT' ? tx.amount : 0 
-      });
-    }
-    return acc;
-  }, []).reverse().slice(-7); // Last 7 unique days of data
+  // Aggregate data for Bar Chart (Income vs Expense)
+  const comparisonData = useMemo(() => {
+    // 1. Calculate Global Totals (Ignoring filters) for the same dates
+    const globalAggregates = transactions.reduce((acc: Record<string, { income: number, expense: number }>, tx) => {
+      const date = new Date(tx.date).toLocaleDateString('id-ID', { month: 'short', day: '2-digit' });
+      if (!acc[date]) acc[date] = { income: 0, expense: 0 };
+      if (tx.type === 'CREDIT') acc[date].income += tx.amount;
+      else acc[date].expense += tx.amount;
+      return acc;
+    }, {});
 
-  const totalIncome = transactions.filter(tx => tx.type === 'CREDIT').reduce((a, b) => a + b.amount, 0);
-  const totalExpense = transactions.filter(tx => tx.type === 'DEBIT').reduce((a, b) => a + b.amount, 0);
+    // 2. Calculate Filtered Totals
+    const filteredAcc = filteredTransactions.reduce((acc: Record<string, { income: number, expense: number }>, tx) => {
+      const date = new Date(tx.date).toLocaleDateString('id-ID', { month: 'short', day: '2-digit' });
+      if (!acc[date]) acc[date] = { income: 0, expense: 0 };
+      if (tx.type === 'CREDIT') acc[date].income += tx.amount;
+      else acc[date].expense += tx.amount;
+      return acc;
+    }, {});
+
+    // 3. Merge into Chart Format (Last 7 days of activity)
+    const dates = Array.from(new Set([...Object.keys(globalAggregates), ...Object.keys(filteredAcc)]))
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+      .slice(-7);
+
+    return dates.map(date => ({
+      date,
+      income: filteredAcc[date]?.income || 0,
+      expense: filteredAcc[date]?.expense || 0,
+      totalIncome: globalAggregates[date]?.income || 0,
+      totalExpense: globalAggregates[date]?.expense || 0
+    }));
+  }, [transactions, filteredTransactions]);
+
+  const totalIncome = filteredTransactions.filter(tx => tx.type === 'CREDIT').reduce((a, b) => a + b.amount, 0);
+  const totalExpense = filteredTransactions.filter(tx => tx.type === 'DEBIT').reduce((a, b) => a + b.amount, 0);
+  const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10" style={{ colorScheme: 'light' }}>
-      {/* Purpose Breakdown */}
-      <section className="bg-white border border-slate-200 rounded-[32px] p-8 shadow-sm">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="bg-amber-500/10 p-2.5 rounded-2xl text-amber-500">
-            <PieChartIcon className="w-5 h-5" />
+    <div className="space-y-10 mb-16 animate-in fade-in duration-1000">
+      {/* Search & Filters */}
+      <div className="glass p-1.5 shadow-xl">
+        <div className="glass bg-white/5 p-8 flex flex-wrap items-center gap-6 border-white/5">
+          <div className="flex items-center gap-3 text-gold">
+              <Filter className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Filter Reality</span>
           </div>
-          <div>
-            <h3 className="text-lg font-black text-slate-800">Expense Breakdown</h3>
-            <p className="text-xs text-slate-500 font-medium">Spending distribution by purpose</p>
-          </div>
-        </div>
-
-        <div className="h-[300px] w-full relative">
-          {isMounted ? (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-            <PieChart>
-              <Pie
-                data={expensesByPurpose}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={5}
-                dataKey="value"
+          <div className="flex flex-wrap gap-4">
+              <select 
+                  value={activeSource}
+                  onChange={(e) => setActiveSource(e.target.value)}
+                  className="bg-slate-900 border border-white/10 rounded-xl px-6 py-3 text-xs font-bold text-white outline-none focus:border-gold/40 transition-all cursor-pointer [color-scheme:dark]"
               >
-                {expensesByPurpose.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
-                formatter={(val: unknown) => `Rp ${formatCurrency(Number(val))}`}
-              />
-              <Legend verticalAlign="bottom" height={36}/>
-            </PieChart>
-          </ResponsiveContainer>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Comparison Chart */}
-      <section className="bg-white border border-slate-200 rounded-[32px] p-8 shadow-sm">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="bg-indigo-500/10 p-2.5 rounded-2xl text-indigo-500">
-            <ArrowRightLeft className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-lg font-black text-slate-800">Income vs Expense</h3>
-            <p className="text-xs text-slate-500 font-medium">Comparison across recent activity</p>
+                  <option value="ALL">All Sources</option>
+                  {sources.filter(s => s !== 'ALL').map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <select 
+                  value={activePurpose}
+                  onChange={(e) => setActivePurpose(e.target.value)}
+                  className="bg-slate-900 border border-white/10 rounded-xl px-6 py-3 text-xs font-bold text-white outline-none focus:border-gold/40 transition-all cursor-pointer [color-scheme:dark]"
+              >
+                  <option value="ALL">All Purposes</option>
+                  {purposes.filter(p => p !== 'ALL').map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
           </div>
         </div>
+      </div>
 
-        <div className="h-[300px] w-full relative">
-          {isMounted ? (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-            <BarChart data={comparisonData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis 
-                dataKey="date" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#64748b', fontSize: 10 }}
-              />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#64748b', fontSize: 10 }}
-                tickFormatter={(val) => `${val / 1000}k`}
-              />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                cursor={{ fill: '#f8fafc' }}
-                itemStyle={{ fontWeight: 'bold' }}
-                formatter={(val: unknown) => `Rp ${formatCurrency(Number(val))}`}
-              />
-              <Bar dataKey="income" name="Income" fill="#34d399" radius={[4, 4, 0, 0]} barSize={20} />
-              <Bar dataKey="expense" name="Expense" fill="#fb7185" radius={[4, 4, 0, 0]} barSize={20} />
-            </BarChart>
-          </ResponsiveContainer>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-            </div>
-          )}
-        </div>
-      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* Purpose Breakdown */}
+        <div className="glass p-1 group">
+          <section className="glass bg-slate-900/40 p-10 h-full border-white/5 group-hover:border-gold/20 transition-all">
+              <div className="flex items-center gap-4 mb-10">
+              <div className="bg-gold/10 p-3 rounded-2xl text-gold border border-gold/20 shadow-lg">
+                  <PieChartIcon className="w-6 h-6" />
+              </div>
+              <div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Vortex Breakdown</h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Expense velocity by intent</p>
+              </div>
+              </div>
 
-      {/* Comparison Summary */}
-      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white border border-slate-200 p-6 rounded-3xl flex flex-col justify-center shadow-sm">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Savings Rate</span>
-            <div className="flex items-end gap-2 text-2xl font-black text-slate-900">
-                {totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0}%
-                <span className="text-xs text-emerald-600 mb-1 font-bold">of income</span>
-            </div>
+              <div className="h-[350px] w-full relative">
+              {isMounted ? (
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <PieChart>
+                  <Pie
+                      data={expensesByPurpose}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={70}
+                      outerRadius={110}
+                      paddingAngle={8}
+                      dataKey="value"
+                      stroke="none"
+                  >
+                      {expensesByPurpose.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                  </Pie>
+                  <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(251, 191, 36, 0.2)', borderRadius: '16px', backdropFilter: 'blur(12px)', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.5)' }}
+                      itemStyle={{ color: '#ffffff', fontWeight: '800', fontSize: '12px' }}
+                      formatter={(val: unknown) => `Rp ${formatCurrency(Number(val))}`}
+                  />
+                  <Legend verticalAlign="bottom" height={42} iconType="circle" />
+                  </PieChart>
+              </ResponsiveContainer>
+              ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                  </div>
+              )}
+              </div>
+          </section>
         </div>
-        <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm">
-            <div className="flex items-center gap-2 text-emerald-600 mb-1">
-                <TrendingUp className="w-4 h-4" />
-                <span className="text-xs font-bold uppercase tracking-widest">Efficiency</span>
-            </div>
-            <p className="text-slate-600 text-sm font-medium italic">
-                {totalIncome > totalExpense ? "You're growing your wealth! Keep it up." : "Your expenses are outpacing income. Let's look at the details."}
-            </p>
+
+        {/* Comparison Chart */}
+        <div className="glass p-1 group">
+          <section className="glass bg-slate-900/40 p-10 h-full border-white/5 group-hover:border-gold/20 transition-all">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                  <div className="bg-gold/10 p-3 rounded-2xl text-gold border border-gold/20 shadow-lg">
+                      <ArrowRightLeft className="w-6 h-6" />
+                  </div>
+                  <div>
+                      <h3 className="text-xl font-bold text-white tracking-tight">Chronicle Flow</h3>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Active vs background performance</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 text-[9px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
+                  <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-slate-700" /> Total</div>
+                  <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-gold shadow-gold" /> Active</div>
+                </div>
+              </div>
+
+              <div className="h-[350px] w-full relative px-4">
+              {isMounted ? (
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <BarChart data={comparisonData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <XAxis 
+                      dataKey="date" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: '#64748b', fontSize: 10, fontWeight: 'bold' }}
+                  />
+                  <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: '#64748b', fontSize: 10, fontWeight: 'bold' }}
+                      tickFormatter={(val) => `${val / 1000}k`}
+                  />
+                  <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(251, 191, 36, 0.2)', borderRadius: '16px', backdropFilter: 'blur(12px)', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.5)' }}
+                      cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                      itemStyle={{ fontWeight: '800', fontSize: '12px', color: '#fff' }}
+                      formatter={(val: unknown, name: any) => [`Rp ${formatCurrency(Number(val))}`, name]}
+                  />
+                  {/* Global Background Totals */}
+                  <Bar dataKey="totalIncome" name="Total Monthly Income" fill="#334155" radius={[6, 6, 0, 0]} barSize={24} fillOpacity={0.3} />
+                  <Bar dataKey="totalExpense" name="Total Monthly Expense" fill="#1e293b" radius={[6, 6, 0, 0]} barSize={24} fillOpacity={0.3} />
+                  
+                  {/* Active Filtered Data */}
+                  <Bar dataKey="income" name="Active Income" fill="#34d399" radius={[6, 6, 0, 0]} barSize={12} />
+                  <Bar dataKey="expense" name="Active Expense" fill="#fb7185" radius={[6, 6, 0, 0]} barSize={12} />
+                  </BarChart>
+              </ResponsiveContainer>
+              ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                  </div>
+              )}
+              </div>
+          </section>
         </div>
-        <div className="bg-white border border-slate-200 p-6 rounded-3xl flex flex-col justify-center shadow-sm">
-             <Link href="/analytics" className="text-indigo-600 hover:text-indigo-500 font-bold flex items-center gap-2">
-                Detailed Analytics <TrendingUp className="w-4 h-4" />
-             </Link>
+
+        {/* Comparison Summary Cards */}
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="glass bg-white/5 p-10 flex flex-col justify-center border-white/5 group hover:border-gold/20 transition-all">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em] mb-4">Savings Velocity</span>
+                <div className="flex items-end gap-3 text-5xl font-bold text-white tracking-tighter drop-shadow-xl">
+                    {savingsRate}%
+                    <span className="text-sm text-emerald-400 mb-2 font-black uppercase tracking-widest">Surplus</span>
+                </div>
+                <p className="text-[9px] text-gold/40 font-bold mt-4 uppercase tracking-[0.2em]">Efficiency of capital retention</p>
+            </div>
+            <div className="glass bg-white/5 p-10 flex flex-col justify-center border-white/5 group hover:border-gold/20 transition-all">
+                <div className="flex items-center gap-3 text-emerald-400 mb-4">
+                    <TrendingUp className="w-6 h-6 shadow-emerald-500/20" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Vitality Index</span>
+                </div>
+                <p className="text-white text-lg font-medium leading-relaxed italic drop-shadow-sm">
+                    {totalIncome > totalExpense ? "Structure optimized. Wealth retention currently at peak efficiency." : "Outflow exceeds inflow. Strategic redistribution recommended."}
+                </p>
+            </div>
+            <div className="glass bg-white/5 p-10 flex items-center justify-center border-white/5 group hover:bg-gold/5 hover:border-gold/30 transition-all cursor-pointer">
+                <Link href="/analytics" className="text-gold font-black flex items-center gap-4 text-xs uppercase tracking-[0.3em]">
+                    Global View <ArrowRightLeft className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                </Link>
+            </div>
         </div>
       </div>
     </div>

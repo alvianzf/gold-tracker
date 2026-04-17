@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, RefreshCw, Loader2, Quote } from 'lucide-react';
+import { Zap, RefreshCw, Sparkles, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,9 +35,9 @@ export default function DailyInsight() {
   };
 
   if (isLoading) return (
-    <div className="bg-slate-900/50 border border-white/5 p-8 rounded-3xl animate-pulse flex flex-col items-center justify-center gap-4">
-      <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-      <div className="h-4 w-48 bg-white/5 rounded-full" />
+    <div className="glass bg-white/5 border-white/10 p-12 animate-pulse flex flex-col items-center justify-center gap-6">
+      <Loader2 className="w-10 h-10 text-gold animate-spin" />
+      <div className="h-4 w-64 bg-white/10 rounded-full" />
     </div>
   );
 
@@ -44,62 +45,65 @@ export default function DailyInsight() {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden bg-white border border-slate-200 p-8 rounded-3xl shadow-sm group"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="relative overflow-hidden glass p-1 shadow-gold/10 group cursor-pointer"
     >
-      {/* Background Glow */}
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-100/50 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-100/50 blur-[100px] rounded-full pointer-events-none" />
+      <div className="glass bg-gradient-to-r from-gold/15 via-transparent to-transparent p-10 flex flex-col md:flex-row items-center gap-10 border-white/5 group-hover:bg-gold/10 transition-all duration-700">
+        
+        {/* Background Decorative Element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gold opacity-[0.05] rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-      <div className="relative flex flex-col md:flex-row items-center gap-6">
-        <div className="flex-shrink-0">
-          <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center shadow-sm">
-            <Sparkles className="w-8 h-8 text-amber-600" />
+        <div className="flex-shrink-0 relative">
+          <div className="w-20 h-20 rounded-full bg-gold flex items-center justify-center shadow-gold animate-shimmer relative z-10">
+            <Sparkles className="w-10 h-10 text-black" />
           </div>
+          <div className="absolute inset-0 bg-gold/50 rounded-full animate-ping opacity-20" />
         </div>
 
-        <div className="flex-1 text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-            <Quote className="w-4 h-4 text-amber-500/40" />
-            <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">AI Gold Advisor</span>
+        <div className="flex-1 text-center md:text-left relative z-10">
+          <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
+            <div className="p-1.5 rounded-lg bg-gold/10 border border-gold/20">
+              <Zap className="w-4 h-4 text-gold fill-gold/20" />
+            </div>
+            <span className="text-[10px] font-bold text-gold uppercase tracking-[0.4em]">Daily Insights</span>
           </div>
           <AnimatePresence mode="wait">
             <motion.p
               key={insight.content}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="text-lg md:text-2xl font-bold text-slate-800 leading-relaxed italic"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="text-xl md:text-2xl font-bold text-white leading-tight italic tracking-tight"
             >
               "{insight.content}"
             </motion.p>
           </AnimatePresence>
         </div>
 
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 relative z-10">
           <button
             onClick={handleRegenerate}
             disabled={insight.regenerated || isRegenerating}
-            className={`group relative flex items-center gap-2 px-5 py-3 rounded-2xl font-bold transition-all ${
+            className={cn(
+              "group relative flex items-center gap-4 px-8 py-4 rounded-2xl font-bold transition-all border shadow-lg",
               insight.regenerated 
-                ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-transparent' 
-                : 'bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200'
-            }`}
+                ? "bg-white/5 text-slate-500 border-white/10 cursor-not-allowed opacity-50" 
+                : "bg-gold hover:bg-gold-strong text-black border-gold shadow-gold hover:scale-105 active:scale-95"
+            )}
           >
             {isRegenerating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              <RefreshCw className={`w-4 h-4 ${!insight.regenerated && 'group-hover:rotate-180 transition-transform duration-500'}`} />
+              <RefreshCw className={cn("w-5 h-5", !insight.regenerated && "group-hover:rotate-180 transition-transform duration-700")} />
             )}
-            <span className="text-sm">
-              {insight.regenerated ? 'Limit Reached' : 'Regenerate'}
+            <span className="text-sm uppercase tracking-widest font-black">
+              {insight.regenerated ? 'LIMIT' : 'SYNC'}
             </span>
             {!insight.regenerated && !isRegenerating && (
-              <span className="absolute -top-2 -right-2 flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 text-[8px] items-center justify-center text-slate-950 font-black">1</span>
-              </span>
+              <div className="absolute -top-3 -right-3 flex items-center justify-center w-8 h-8 rounded-full bg-black border border-gold text-[10px] font-black text-gold shadow-gold animate-bounce">
+                1
+              </div>
             )}
           </button>
         </div>
