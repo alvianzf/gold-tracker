@@ -6,20 +6,14 @@ export async function proxy(request: NextRequest) {
   // Extract path
   const { pathname } = request.nextUrl;
 
-  // Unprotected Routes
-  const isPublicRoute = 
-    pathname.startsWith('/login') || 
-    pathname.startsWith('/register') || 
+  // Static files and internal Next.js routes are always public
+  const isInternal = 
     pathname.startsWith('/_next') || 
     pathname.includes('.') || 
-    pathname === '/api/scrape' ||
-    pathname === '/api/fix-prices';
+    pathname === '/favicon.ico' ||
+    pathname === '/icon.png';
     
-  if (isPublicRoute) {
-    return NextResponse.next();
-  }
-
-  if (pathname === '/api/auth/login' || pathname === '/api/auth/register') {
+  if (isInternal) {
     return NextResponse.next();
   }
 
@@ -29,9 +23,30 @@ export async function proxy(request: NextRequest) {
   // Verify the JWT is valid
   const payload = sessionToken ? await verifyToken(sessionToken) : null;
 
-  if (!payload) {
+  // Auth Group: Login, Register, and the Landing Page (/)
+  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  const isLandingPage = pathname === '/';
+
+  if (payload) {
+    // If logged in, don't show landing, login, or register. Send to dashboard.
+    if (isAuthRoute || isLandingPage) {
+      return NextResponse.redirect(new URL('/gold', request.url));
+    }
+  } else {
+    // If NOT logged in, allow landing page and auth routes
+    if (isLandingPage || isAuthRoute) {
+      return NextResponse.next();
+    }
+    
     // API routes return 401 Unauthorized
     if (pathname.startsWith('/api/')) {
+      // Allow specific public API routes
+      const isPublicApi = pathname === '/api/auth/login' || 
+                         pathname === '/api/auth/register' ||
+                         pathname === '/api/scrape' ||
+                         pathname === '/api/fix-prices';
+      if (isPublicApi) return NextResponse.next();
+      
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -50,5 +65,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api/auth/login|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api/some-exempt-route|favicon.ico).*)'],
 };
