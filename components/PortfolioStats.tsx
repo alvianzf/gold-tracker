@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Wallet, Target, Percent } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 export default function PortfolioStats() {
   const { data: summary, isLoading } = useQuery({
@@ -30,14 +31,14 @@ export default function PortfolioStats() {
   const stats = [
     {
       label: 'Portfolio Value',
-      value: `Rp ${summary?.totalValue.toLocaleString('id-ID')}`,
+      value: `Rp ${formatCurrency(summary?.totalValue)}`,
       icon: Wallet,
       color: 'text-amber-500',
       bg: 'bg-amber-500/10',
     },
     {
       label: 'Total Profit',
-      value: `Rp ${summary?.totalProfit.toLocaleString('id-ID')}`,
+      value: `Rp ${formatCurrency(summary?.totalProfit)}`,
       icon: Target,
       color: (summary?.totalProfit ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500',
       bg: (summary?.totalProfit ?? 0) >= 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10',

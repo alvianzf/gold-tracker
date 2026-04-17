@@ -7,6 +7,8 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import ViewHoldingModal from './modals/ViewHoldingModal';
 import EditHoldingModal from './modals/EditHoldingModal';
+import ActionMenu from './ActionMenu';
+import { formatCurrency } from '@/lib/utils';
 
 interface Holding {
   id: string;
@@ -88,7 +90,7 @@ export default function HoldingsTable() {
   const handleSell = (holding: Holding) => {
     Swal.fire({
       title: 'Execute Sell Order?',
-      text: `Are you sure you want to liquidate ${holding.weight}g of ${holding.type} at current market value (Rp ${holding.currentValue.toLocaleString('id-ID')})?`,
+      text: `Are you sure you want to liquidate ${holding.weight}g of ${holding.type} at current market value (Rp ${formatCurrency(holding.currentValue)})?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#f59e0b',
@@ -174,9 +176,9 @@ export default function HoldingsTable() {
                   </div>
                 </td>
                 <td className="px-6 py-5 text-slate-300 font-medium">{holding.weight}g</td>
-                <td className="px-6 py-5 text-slate-300 font-medium">Rp {holding.buyPrice.toLocaleString('id-ID')}</td>
+                <td className="px-6 py-5 text-slate-300 font-medium">Rp {formatCurrency(holding.buyPrice)}</td>
                 <td className="px-6 py-5 font-bold text-slate-100">
-                  Rp {holding.currentValue.toLocaleString('id-ID')}
+                  Rp {formatCurrency(holding.currentValue)}
                 </td>
                 <td className="px-6 py-5 text-right">
                   <div className={`inline-flex items-center gap-1 font-bold ${holding.pl >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
@@ -193,16 +195,27 @@ export default function HoldingsTable() {
                   </button>
                 </td>
                 <td className="px-6 py-5 text-right">
-                  <div className="flex justify-end gap-1">
-                    <button onClick={() => setViewHolding(holding)} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors" title="View details">
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setEditHolding(holding)} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors" title="Edit">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => handleDelete(holding)} className="p-2 hover:bg-white/10 rounded-lg text-rose-500/70 hover:text-rose-400 transition-colors" title="Delete">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div className="flex justify-end">
+                    <ActionMenu
+                      actions={[
+                        {
+                          label: 'View Details',
+                          icon: Eye,
+                          onClick: () => setViewHolding(holding),
+                        },
+                        {
+                          label: 'Edit',
+                          icon: Pencil,
+                          onClick: () => setEditHolding(holding),
+                        },
+                        {
+                          label: 'Delete',
+                          icon: Trash2,
+                          variant: 'danger',
+                          onClick: () => handleDelete(holding),
+                        },
+                      ]}
+                    />
                   </div>
                 </td>
               </tr>

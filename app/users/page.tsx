@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Plus, Trash2, Shield, User, Loader2 } from 'lucide-react';
+import ActionMenu from '@/components/ActionMenu';
 import { useState } from 'react';
 import { format } from 'date-fns';
 
@@ -129,13 +130,22 @@ export default function UsersPage() {
                       {format(new Date(u.createdAt), 'MMM dd, yyyy')}
                     </td>
                     <td className="px-8 py-5 text-right">
-                      <button 
-                        onClick={() => deleteMutation.mutate(u.id)}
-                        disabled={deleteMutation.isPending}
-                        className="p-2 text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all disabled:opacity-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex justify-end">
+                        <ActionMenu
+                          actions={[
+                            {
+                              label: 'Delete User',
+                              icon: Trash2,
+                              variant: 'danger',
+                              onClick: () => {
+                                if (confirm(`Are you sure you want to delete user ${u.username}?`)) {
+                                  deleteMutation.mutate(u.id);
+                                }
+                              },
+                            },
+                          ]}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}

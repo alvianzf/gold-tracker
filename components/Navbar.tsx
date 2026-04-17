@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, History, BarChart3, Coins, Users, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, History, BarChart3, Coins, Users, LogOut, Menu, X, Wallet } from 'lucide-react';
 import axios from 'axios';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -15,10 +15,11 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const navItems = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'History', href: '/history', icon: History },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Users', href: '/users', icon: Users, adminOnly: true },
+  { name: 'Gold Portfolio', href: '/gold', icon: Coins },
+  { name: 'Finance Tracker', href: '/finance', icon: Wallet },
+  { name: 'Gold Analytics', href: '/analytics', icon: BarChart3 },
+  { name: 'User Logs', href: '/history', icon: History },
+  { name: 'Admin', href: '/users', icon: Users, adminOnly: true },
 ];
 
 export default function Navbar() {

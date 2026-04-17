@@ -4,6 +4,7 @@ import './globals.css';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/Navbar';
 import PriceTicker from '@/components/PriceTicker';
+import ThemeEnforcer from '@/components/ThemeEnforcer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,8 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-slate-50 min-h-screen flex flex-col`}>
+    <html lang="en" className="dark" style={{ colorScheme: 'dark', background: '#020617' }}>
+      <body 
+        className={`${inter.className} bg-slate-950 text-slate-200 min-h-screen flex flex-col antialiased`}
+        style={{ background: '#020617', color: '#f8fafc' }}
+      >
+        <ThemeEnforcer />
         <Providers>
           <PriceTicker />
           <Navbar />

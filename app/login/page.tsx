@@ -38,7 +38,7 @@ function LoginForm() {
       <div className="relative z-10">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Tabungan <span className="text-amber-500">Tracker</span>
+            Gold <span className="text-amber-500">Tracker</span>
           </h1>
           <p className="text-slate-400 mt-2">Secure access required</p>
         </div>
