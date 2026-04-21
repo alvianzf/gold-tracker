@@ -12,17 +12,22 @@ const openai = new OpenAI({
   baseURL: 'https://ai.sumopod.com/v1',
 });
 
-export async function generateFinancialSuggestion(transactions: any[]) {
+export async function generateFinancialSuggestion(transactions: any[], metrics?: { totalIncome: number; totalExpense: number; balance: number }) {
   // Construct a concise summary of transactions for the AI
   const txSummary = transactions.length > 0
     ? transactions.map(t => `${t.type}: ${t.amount} for ${t.purpose}`).join(', ')
     : 'No recent finance transactions';
 
+  const metricsSummary = metrics
+    ? `30-Day Snapshot: Total Income (+): ${metrics.totalIncome}, Total Expenses (-): ${metrics.totalExpense}, Net Flux: ${metrics.balance}.`
+    : 'Context unavailable.';
+
   const prompt = `
-    Analyze the following recent finance transactions: [${txSummary}]
+    Analyze their recent localized transactions: [${txSummary}]
+    CRITICAL REALITY CHECK - Overall 30-Day Global Context: [${metricsSummary}]
 
     Provide your response strictly in the following flow:
-    1. Financial Health Status: Provide a rapid, objective status (e.g., "Status: Bleeding Cash", "Status: Stable", "Status: Thriving") based on the ratio of income vs expenses.
+    1. Financial Health Status: Provide a rapid, objective status (e.g., "Status: Bleeding Cash", "Status: Stable", "Status: Thriving") based heavily on the 30-Day Global Context metrics. Do not claim there is 'no income' if the Global Metrics show income exists.
     2. Snarky Observation: A witty, brutally honest, and slightly sarcastic 1-sentence observation about their specific spending habits or income.
     3. Actionable Advice: A clear, serious, and practical piece of financial advice or budgeting tip to improve their situation (1 sentence).
     

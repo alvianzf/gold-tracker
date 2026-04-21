@@ -33,10 +33,23 @@ export async function GET() {
     const transactions = await prisma.financeTransaction.findMany({
       where: { userId: user.id as string },
       orderBy: { date: 'desc' },
-      take: 20, // Take last 20 for context
+      take: 20, // Take last 20 for localized context
     });
 
-    const suggestionContent = await generateFinancialSuggestion(transactions);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentMetricsData = await prisma.financeTransaction.findMany({
+      where: { userId: user.id as string, date: { gte: thirtyDaysAgo } }
+    });
+
+    const totalIncome = recentMetricsData.filter(tx => tx.type === 'CREDIT').reduce((acc, tx) => acc + tx.amount, 0);
+    const totalExpense = recentMetricsData.filter(tx => tx.type === 'DEBIT').reduce((acc, tx) => acc + tx.amount, 0);
+
+    const suggestionContent = await generateFinancialSuggestion(transactions, {
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense
+    });
 
     const newSuggestion = await prisma.aiSuggestion.create({
       data: {
@@ -88,7 +101,20 @@ export async function POST() {
       take: 20,
     });
 
-    const newContent = await generateFinancialSuggestion(transactions);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentMetricsData = await prisma.financeTransaction.findMany({
+      where: { userId: user.id as string, date: { gte: thirtyDaysAgo } }
+    });
+
+    const totalIncome = recentMetricsData. filter(tx => tx.type === 'CREDIT').reduce((acc, tx) => acc + tx.amount, 0);
+    const totalExpense = recentMetricsData.filter(tx => tx.type === 'DEBIT').reduce((acc, tx) => acc + tx.amount, 0);
+
+    const newContent = await generateFinancialSuggestion(transactions, {
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense
+    });
 
     const updated = await prisma.aiSuggestion.update({
       where: { id: existing.id },
