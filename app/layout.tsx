@@ -9,9 +9,45 @@ import ThemeEnforcer from '@/components/ThemeEnforcer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Gold Tracker | Precision Portfolio Management',
-  description: 'Track your gold holdings (Antam, UBS, Galeri 24) with real-time P/L and historical price analytics.',
-  icons: { icon: '/logo.png' },
+  metadataBase: new URL('https://tabungan-tracker.vercel.app'), // Replace with your actual production domain
+  title: {
+    template: '%s | Gold Tracker Terminal',
+    default: 'Gold Tracker | Precision Portfolio Management',
+  },
+  description: 'Track your gold holdings (Antam, UBS, Galeri 24) with real-time P/L and historical price analytics. Execute trades securely with advanced dashboard insights.',
+  keywords: ['Gold Tracker', 'Tabungan', 'Finance Tracker', 'Antam', 'UBS Gold', 'Portfolio Management', 'Investment', 'Real-time Analytics'],
+  openGraph: {
+    title: 'Gold Tracker | Precision Portfolio Management',
+    description: 'Track your gold holdings and financial transactions with real-time analytics and an elite dark UI system.',
+    url: 'https://tabungan-tracker.vercel.app',
+    siteName: 'Gold Tracker Terminal',
+    locale: 'id_ID',
+    type: 'website',
+    images: [
+      {
+        url: '/logo.png', // Ideally you would add an og-image.png here
+        width: 1200,
+        height: 630,
+        alt: 'Gold Tracker Terminal',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gold Tracker | Vault & Finance Analytics',
+    description: 'Elite tracking for your precious metals and daily financial ledgers.',
+    images: ['/logo.png'],
+  },
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
+  other: {
+    'geo.region': 'ID',
+    'geo.placename': 'Indonesia',
+    'geo.position': '-0.789275;113.921327',
+    'ICBM': '-0.789275, 113.921327',
+  },
 };
 
 export default function RootLayout({
