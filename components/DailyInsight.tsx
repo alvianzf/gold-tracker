@@ -7,6 +7,21 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const formatInsightText = (text: string) => {
+  if (!text) return null;
+  // Match **bold** or *italic*
+  const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-black text-gold border-b border-gold/30">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={i} className="not-italic text-gold/90">{part.slice(1, -1)}</em>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
 export default function DailyInsight() {
   const queryClient = useQueryClient();
   const [isRegenerating, setIsRegenerating] = useState(false);
@@ -76,7 +91,7 @@ export default function DailyInsight() {
               exit={{ opacity: 0, y: -10 }}
               className="text-xl md:text-2xl font-bold text-white leading-tight italic tracking-tight whitespace-pre-line"
             >
-              {insight.content}
+              {formatInsightText(insight.content)}
             </motion.p>
           </AnimatePresence>
         </div>
