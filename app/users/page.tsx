@@ -59,7 +59,7 @@ export default function UsersPage() {
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">{t('users.subtitle')}</span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter">
+          <h1 className="text-3xl font-black text-white tracking-tighter">
             USER <span className="text-gold">AUTHORITY</span>
           </h1>
           <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg">
@@ -158,7 +158,7 @@ export default function UsersPage() {
                           <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 group-hover/row:bg-gold group-hover/row:text-black transition-all border border-white/10 group-hover/row:border-gold shadow-lg">
                             <User className="w-6 h-6" />
                           </div>
-                          <span className="text-xl font-black text-white group-hover/row:translate-x-1 transition-transform">{u.username}</span>
+                          <span className="text-lg font-black text-white group-hover/row:translate-x-1 transition-transform">{u.username}</span>
                         </div>
                       </td>
                       <td className="px-10 py-10">

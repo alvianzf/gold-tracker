@@ -83,7 +83,7 @@ export default function AnalyticsPage() {
               </div>
               <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">{t('analytics.intelligence') || 'Wealth Intelligence'}</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
               {t('analytics.title')}
             </h1>
             <p className="text-slate-400 max-w-xl text-lg font-medium leading-relaxed">
@@ -119,7 +119,7 @@ export default function AnalyticsPage() {
             </div>
             <div>
               <h2 className="text-[10px] font-black text-gold uppercase tracking-[0.4em] mb-3">{t('analytics.netWorth')}</h2>
-              <p className="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-2xl">
+              <p className="text-3xl md:text-5xl font-black text-white tracking-tighter drop-shadow-2xl">
                 Rp {formatCurrency(totalWealth)}
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
                 <PieChartIcon className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white tracking-tight">{t('analytics.allocation')}</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">{t('analytics.allocation')}</h2>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1">{t('analytics.composition')}</p>
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function AnalyticsPage() {
                 <TrendingUp className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white tracking-tight">Equity Growth</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">Equity Growth</h2>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1">Gold Performance</p>
               </div>
             </div>
@@ -236,7 +236,7 @@ export default function AnalyticsPage() {
                   <BarChart3 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white tracking-tight">Market Spot</h2>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Market Spot</h2>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1">Per Gram Value</p>
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function AnalyticsPage() {
                 <History className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white tracking-tight">Vortex Trajectory</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">Vortex Trajectory</h2>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em] mt-1">Growth Index Over Time</p>
               </div>
             </div>

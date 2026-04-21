@@ -60,7 +60,7 @@ export default function FinancePage() {
               </div>
               <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">Portfolio Analytics</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
               {t('finance.title')}
             </h1>
             <p className="text-slate-400 max-w-xl text-lg font-medium leading-relaxed">

@@ -42,7 +42,7 @@ export default function HistoryPage() {
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">{t('history.title')}</span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter">
+          <h1 className="text-3xl font-black text-white tracking-tighter">
             TRANSACTION <span className="text-gold">CHRONICLE</span>
           </h1>
           <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg">
@@ -144,7 +144,7 @@ export default function HistoryPage() {
                           <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 group-hover/row:bg-gold group-hover/row:text-black transition-all border border-white/10 group-hover/row:border-gold shadow-lg">
                             <Calendar className="w-6 h-6" />
                           </div>
-                          <span className="text-xl font-black text-white group-hover/row:translate-x-1 transition-transform">{format(new Date(tx.date), 'dd MMMM yyyy')}</span>
+                          <span className="text-lg font-black text-white group-hover/row:translate-x-1 transition-transform">{format(new Date(tx.date), 'dd MMMM yyyy')}</span>
                         </div>
                       </td>
                       <td className="px-10 py-10">
@@ -158,13 +158,13 @@ export default function HistoryPage() {
                       </td>
                       <td className="px-10 py-10">
                         <div className="flex flex-col">
-                          <span className="text-xl font-black text-white tracking-tight group-hover/row:text-gold transition-colors">{tx.holding.type}</span>
+                          <span className="text-lg font-black text-white tracking-tight group-hover/row:text-gold transition-colors">{tx.holding.type}</span>
                           <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em] leading-none mt-2">{tx.holding.weight} GRAM CERTIFIED</span>
                         </div>
                       </td>
                       <td className="px-10 py-10 text-right">
                         <div className="flex flex-col items-end">
-                          <span className="text-2xl font-black text-white tracking-tighter group-hover/row:scale-110 transition-transform origin-right">Rp {tx.price.toLocaleString('id-ID')}</span>
+                          <span className="text-xl font-black text-white tracking-tighter group-hover/row:scale-110 transition-transform origin-right">Rp {tx.price.toLocaleString('id-ID')}</span>
                           <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.2em] mt-1">Market Execution</span>
                         </div>
                       </td>

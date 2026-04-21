@@ -37,7 +37,7 @@ function LoginForm() {
           <div className="inline-block bg-gold/10 p-4 rounded-2xl border border-gold/20 mb-6">
             <Lock className="w-8 h-8 text-gold" />
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter">
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter">
             GOLD <span className="text-gold">TRACKER</span>
           </h1>
           <p className="text-slate-500 mt-3 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Access Terminal</p>

@@ -116,7 +116,7 @@ export default function ProfilePage() {
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">{t('profile.identityCore')}</span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter">
+          <h1 className="text-3xl font-black text-white tracking-tighter">
             PRO<span className="text-gold">FILE</span> <span className="text-slate-500 font-light">SYSTEM</span>
           </h1>
           <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg">
@@ -125,7 +125,7 @@ export default function ProfilePage() {
         </div>
         <div className="bg-white/5 border border-white/10 px-8 py-4 rounded-3xl backdrop-blur-xl">
           <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('profile.accessLevel')}</div>
-          <div className={cn("text-xl font-black tracking-widest", user.role === 'ADMIN' ? "text-gold animate-pulse" : "text-white")}>
+          <div className={cn("text-lg font-black tracking-widest", user.role === 'ADMIN' ? "text-gold animate-pulse" : "text-white")}>
             {user.role}
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                 <UserCircle className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">{t('profile.publicIdentity')}</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">{t('profile.publicIdentity')}</h2>
                 <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-500 mt-1">{t('profile.handle')}</p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                 <KeyRound className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">{t('profile.authFactors')}</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">{t('profile.authFactors')}</h2>
                 <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-500 mt-1">Key Management</p>
               </div>
             </div>

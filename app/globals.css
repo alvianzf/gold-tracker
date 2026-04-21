@@ -29,6 +29,10 @@
   --shadow-gold: 0 10px 40px -10px rgba(251, 191, 36, 0.2);
 }
 
+html {
+  font-size: 95%;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);

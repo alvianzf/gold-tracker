@@ -76,7 +76,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-7xl md:text-9xl font-bold text-white tracking-tighter max-w-5xl leading-[0.85] drop-shadow-2xl"
+          className="text-5xl md:text-8xl font-bold text-white tracking-tighter max-w-5xl leading-[0.85] drop-shadow-2xl"
         >
           {t('hero.title').split('Artistic Precision')[0]} <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-gold animate-shimmer">Elite Tracking</span>
@@ -258,7 +258,7 @@ export default function LandingPage() {
       {/* Features Grid */}
       <section className="max-w-7xl mx-auto px-4 w-full text-center">
         <div className="mb-24 space-y-6">
-          <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter">
+          <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter">
             {t('hero.featureTitle').split('Peak')[0]} <span className="text-gold">Peak</span> Performance
           </h2>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto font-medium">{t('hero.featureSubtitle')}</p>
@@ -291,7 +291,7 @@ export default function LandingPage() {
       <section className="max-w-7xl mx-auto px-4 w-full h-[600px]">
         <div className="glass h-full p-20 flex flex-col items-center justify-center text-center gap-10 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gold opacity-[0.03] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-          <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter relative z-10 leading-[0.9]">
+          <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter relative z-10 leading-[0.9]">
             {t('hero.readyTitle')}
           </h2>
           <p className="text-slate-400 max-w-2xl text-xl font-medium relative z-10">

@@ -20,7 +20,7 @@ export default function Dashboard() {
               </div>
               <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">Bullion Reserves</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
               {t('gold.title')}
             </h1>
             <p className="text-slate-400 max-w-xl text-lg font-medium leading-relaxed">
@@ -40,7 +40,7 @@ export default function Dashboard() {
       <section className="space-y-10 pt-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-6">
-            <h2 className="text-3xl font-bold text-white tracking-tight">Active Holdings</h2>
+            <h2 className="text-2xl font-bold text-white tracking-tight">Active Holdings</h2>
             <div className="h-px w-20 bg-white/10" />
             <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-gold/10 border border-gold/20">
               <span className="w-2 h-2 rounded-full bg-gold animate-pulse shadow-gold" />
