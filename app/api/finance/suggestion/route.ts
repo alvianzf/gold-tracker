@@ -23,7 +23,10 @@ export async function GET() {
     });
 
     if (existing) {
-      return NextResponse.json(existing);
+      return NextResponse.json({
+        ...existing,
+        regenerated: user.role === 'ADMIN' ? false : existing.regenerated,
+      });
     }
 
     // Generate new suggestion if none exists for today
@@ -43,7 +46,10 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(newSuggestion);
+    return NextResponse.json({
+      ...newSuggestion,
+      regenerated: user.role === 'ADMIN' ? false : newSuggestion.regenerated,
+    });
   } catch (error) {
     console.error('Fetch Suggestion Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -72,7 +78,7 @@ export async function POST() {
       return NextResponse.json({ error: 'No daily suggestion to regenerate' }, { status: 404 });
     }
 
-    if (existing.regenerated) {
+    if (existing.regenerated && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Regeneration limit reached for today' }, { status: 403 });
     }
 
@@ -92,7 +98,10 @@ export async function POST() {
       },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({
+      ...updated,
+      regenerated: user.role === 'ADMIN' ? false : updated.regenerated,
+    });
   } catch (error) {
     console.error('Regenerate Suggestion Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
