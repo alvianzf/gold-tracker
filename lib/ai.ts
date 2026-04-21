@@ -19,24 +19,25 @@ export async function generateFinancialSuggestion(transactions: any[]) {
     : 'No recent finance transactions';
 
   const prompt = `
-    Based on the following recent finance transactions: [${txSummary}]
+    Analyze the following recent finance transactions: [${txSummary}]
 
-    Provide a professional financial advisor's response focused strictly on budgeting and spending habits:
-    - A snappy, helpful 1-sentence insight about the user's spending or income.
-    - A clear, actionable piece of financial advice or a budgeting tip (1 sentence).
+    Provide your response strictly in the following flow:
+    1. Financial Health Status: Provide a rapid, objective status (e.g., "Status: Bleeding Cash", "Status: Stable", "Status: Thriving") based on the ratio of income vs expenses.
+    2. Snarky Observation: A witty, brutally honest, and slightly sarcastic 1-sentence observation about their specific spending habits or income.
+    3. Actionable Advice: A clear, serious, and practical piece of financial advice or budgeting tip to improve their situation (1 sentence).
     
-    The response should be concise (max 2 sentences), friendly, and expert. If no data is available, encourage them to start tracking their daily expenses.
+    Keep the entire response very concise (max 3 sentences total). If no data is available, sarcastically remind them that you can't analyze a ghost town and to start logging their transactions.
   `;
 
   try {
     const response = await openai.chat.completions.create({
       model: 'gemini/gemini-2.5-flash',
       messages: [
-        { role: 'system', content: 'You are a professional financial advisor specializing in personal finance tracking and budgeting.' },
+        { role: 'system', content: 'You are Mimo, an elite, highly competent, but delightfully snarky AI financial advisor embedded in a premium portfolio tracking system called VaultCore.' },
         { role: 'user', content: prompt }
       ],
       max_tokens: 300,
-      temperature: 0.7
+      temperature: 0.8
     });
 
     return response.choices[0].message.content;

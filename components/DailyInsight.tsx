@@ -74,9 +74,9 @@ export default function DailyInsight() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="text-xl md:text-2xl font-bold text-white leading-tight italic tracking-tight"
+              className="text-xl md:text-2xl font-bold text-white leading-tight italic tracking-tight whitespace-pre-line"
             >
-              "{insight.content}"
+              {insight.content}
             </motion.p>
           </AnimatePresence>
         </div>
