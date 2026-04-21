@@ -96,19 +96,19 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
         <table className="w-full text-left text-sm whitespace-nowrap lg:whitespace-normal border-collapse">
           <thead>
             <tr className="bg-white/[0.03] border-b border-white/10">
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.date')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.purposeSource')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.type')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.amount')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center">{t('finance.receipt')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right">{t('finance.actions')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.date')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.purposeSource')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.type')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em]">{t('finance.amount')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center">{t('finance.receipt')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right">{t('finance.actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {transactions.map((tx) => (
               <React.Fragment key={tx.id}>
                 <tr className="hover:bg-white/[0.04] transition-all group">
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-5">
                     <div className="flex items-center gap-5">
                       <button 
                         onClick={() => toggleExpand(tx.id)}
@@ -122,18 +122,18 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
                         {expandedRows.has(tx.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                       </button>
                       <div className="flex flex-col">
-                        <span className="text-white font-bold tracking-tight text-base">{new Date(tx.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                        <span className="text-white font-bold tracking-tight text-sm">{new Date(tx.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                         <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{new Date(tx.date).toLocaleDateString('id-ID', { weekday: 'long' })}</span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-5">
                     <div className="flex flex-col">
-                      <span className="text-slate-100 font-bold text-lg leading-tight mb-1">{tx.purpose}</span>
+                      <span className="text-slate-100 font-bold text-base leading-tight mb-1">{tx.purpose}</span>
                       <span className="text-gold/60 text-[10px] font-bold uppercase tracking-widest">{tx.source}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-5">
                     <div className={cn(
                       "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase border shadow-sm",
                       tx.type === 'DEBIT' 
@@ -144,18 +144,18 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
                       {tx.type}
                     </div>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-5">
                     <span className={cn(
-                      "text-xl font-bold tracking-tighter drop-shadow-md",
+                      "text-lg font-bold tracking-tighter drop-shadow-md",
                       tx.type === 'DEBIT' ? 'text-white' : 'text-emerald-400'
                     )}>
                       {tx.type === 'DEBIT' ? '-' : '+'} Rp {formatCurrency(tx.amount)}
                     </span>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-5">
                     <div className="flex justify-center">
                       {tx.photoUrl ? (
-                        <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-white/10 bg-white/5 group/img cursor-pointer transition-all hover:scale-110 hover:border-gold shadow-lg" onClick={() => window.open(tx.photoUrl, '_blank')}>
+                        <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-white/10 bg-white/5 group/img cursor-pointer transition-all hover:scale-110 hover:border-gold shadow-lg" onClick={() => window.open(tx.photoUrl, '_blank')}>
                           <Image src={tx.photoUrl} alt="Receipt" fill className="object-cover" />
                           <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                             <ImageIcon className="w-6 h-6 text-white" />
@@ -166,7 +166,7 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
                       )}
                     </div>
                   </td>
-                  <td className="px-8 py-8 text-right">
+                  <td className="px-6 py-5 text-right">
                     <div className="flex justify-end">
                       <ActionMenu
                         actions={[
@@ -188,7 +188,7 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
                 </tr>
                 {expandedRows.has(tx.id) && (
                   <tr className="bg-white/[0.02] animate-in fade-in slide-in-from-top-4 duration-500">
-                    <td colSpan={6} className="px-12 py-12">
+                    <td colSpan={6} className="px-10 py-10">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                         <div className="space-y-6">
                           <div className="flex items-center gap-3">
@@ -196,7 +196,7 @@ export default function FinanceTable({ transactions, isLoading }: FinanceTablePr
                             <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em]">Audit Details</h4>
                           </div>
                           <div className="glass bg-white/5 p-8 border-white/10 shadow-inner">
-                            <p className="text-slate-300 text-lg font-medium leading-relaxed italic">
+                            <p className="text-slate-300 text-base font-medium leading-relaxed italic">
                               "{tx.details || t('finance.noDetails')}"
                             </p>
                           </div>

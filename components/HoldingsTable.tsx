@@ -162,37 +162,37 @@ export default function HoldingsTable() {
         <table className="w-full text-left text-sm whitespace-nowrap lg:whitespace-normal border-separate border-spacing-0">
           <thead>
             <tr className="bg-white/[0.03]">
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.type')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.weight')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.buyPrice')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.totalValue')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('gold.profitValue')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.liquidity')}</th>
-              <th className="px-8 py-6 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('finance.actions')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.type')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.weight')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.buyPrice')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] border-b border-white/10">{t('gold.totalValue')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('gold.profitValue')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-center border-b border-white/10">{t('gold.liquidity')}</th>
+              <th className="px-6 py-4 font-bold text-gold uppercase text-[10px] tracking-[0.3em] text-right border-b border-white/10">{t('finance.actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {holdings.map((holding) => (
               <tr key={holding.id} className="hover:bg-white/[0.04] transition-all group">
-                <td className="px-8 py-8">
+                <td className="px-6 py-5">
                   <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-gold/20 flex items-center justify-center text-gold font-black text-xl shadow-lg group-hover:bg-gold group-hover:text-black transition-all">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-gold/20 flex items-center justify-center text-gold font-black text-lg shadow-lg group-hover:bg-gold group-hover:text-black transition-all">
                       {holding.type[0]}
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-bold text-white text-lg tracking-tight leading-tight">{holding.type}</span>
+                      <span className="font-bold text-white text-base tracking-tight leading-tight">{holding.type}</span>
                       <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Digital Vault Record</span>
                     </div>
                   </div>
                 </td>
-                <td className="px-8 py-8 text-center text-slate-100 font-black text-lg tracking-tight">{holding.weight}g</td>
-                <td className="px-8 py-8 text-slate-400 font-bold">Rp {formatCurrency(holding.buyPrice)}</td>
-                <td className="px-8 py-8">
-                  <span className="text-xl font-black text-white tracking-tighter drop-shadow-md">
+                <td className="px-6 py-5 text-center text-slate-100 font-black text-base tracking-tight">{holding.weight}g</td>
+                <td className="px-6 py-5 text-slate-400 font-bold">Rp {formatCurrency(holding.buyPrice)}</td>
+                <td className="px-6 py-5">
+                  <span className="text-lg font-black text-white tracking-tighter drop-shadow-md">
                     Rp {formatCurrency(holding.currentValue)}
                   </span>
                 </td>
-                <td className="px-8 py-8 text-right">
+                <td className="px-6 py-5 text-right">
                   <div className={cn(
                     "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase border",
                     holding.pl >= 0 
@@ -203,7 +203,7 @@ export default function HoldingsTable() {
                     {holding.plPercent.toFixed(2)}%
                   </div>
                 </td>
-                <td className="px-8 py-8 text-center">
+                <td className="px-6 py-5 text-center">
                   <button 
                     onClick={() => handleSell(holding)}
                     className="flex items-center gap-3 bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 px-6 py-3 rounded-2xl text-[10px] font-black text-slate-400 hover:text-gold uppercase tracking-widest transition-all shadow-xl active:scale-95"
@@ -211,7 +211,7 @@ export default function HoldingsTable() {
                     <Tag className="w-4 h-4" /> {t('gold.liquidity')}
                   </button>
                 </td>
-                <td className="px-8 py-8 text-right">
+                <td className="px-6 py-5 text-right">
                   <div className="flex justify-end">
                     <ActionMenu
                       actions={[
