@@ -5,6 +5,7 @@ import { X, Upload, Loader2, Calendar, Wallet, Tag, ArrowUpCircle, ArrowDownCirc
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import Portal from '../Portal';
 import Image from 'next/image';
 import { formatInputCurrency, cleanNumericValue, cn } from '@/lib/utils';
 import { showSuccessToast, showErrorToast } from '@/lib/toast';
@@ -146,7 +147,8 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
+    <Portal>
+      <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-500" 
         onClick={onClose}
@@ -402,6 +404,7 @@ export default function FinanceModal({ onClose, transaction }: FinanceModalProps
           </footer>
         </div>
       </div>
-    </div>
+      </div>
+    </Portal>
   );
 }

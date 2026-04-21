@@ -3,6 +3,7 @@
 import { X, ArrowUpRight, ArrowDownRight, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatCurrency, cn } from '@/lib/utils';
+import Portal from '../Portal';
 
 interface ViewModalProps {
   holding: {
@@ -26,7 +27,8 @@ export default function ViewHoldingModal({ holding, onClose }: ViewModalProps) {
   const isProfit = holding.pl >= 0;
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
+    <Portal>
+      <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-500" onClick={onClose} />
       <div className="relative w-full max-w-md glass p-1.5 shadow-gold/10 overflow-hidden animate-in zoom-in-95 duration-500">
         <div className="glass bg-slate-900/80 border-white/5">
@@ -107,6 +109,7 @@ export default function ViewHoldingModal({ holding, onClose }: ViewModalProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </Portal>
   );
 }

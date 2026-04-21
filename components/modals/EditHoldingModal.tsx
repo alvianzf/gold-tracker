@@ -5,6 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import ReceiptUploader from '../ReceiptUploader';
+import Portal from '../Portal';
 
 interface EditModalProps {
   holding: any;
@@ -44,7 +45,8 @@ export default function EditHoldingModal({ holding, onClose }: EditModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
+    <Portal>
+      <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-500" 
         onClick={onClose}
@@ -135,6 +137,7 @@ export default function EditHoldingModal({ holding, onClose }: EditModalProps) {
           </form>
         </div>
       </div>
-    </div>
+      </div>
+    </Portal>
   );
 }

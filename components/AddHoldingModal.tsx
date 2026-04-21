@@ -7,6 +7,7 @@ import { X, Plus, Coins, Loader2 } from 'lucide-react';
 import { useI18n } from '@/context/LanguageContext';
 import ReceiptUploader from './ReceiptUploader';
 import { formatCurrency } from '@/lib/utils';
+import Portal from './Portal';
 
 export default function AddHoldingModal() {
   const { t } = useI18n();
@@ -72,7 +73,8 @@ export default function AddHoldingModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
+    <Portal>
+      <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 sm:p-10">
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-500" 
         onClick={() => setIsOpen(false)}
@@ -223,6 +225,7 @@ export default function AddHoldingModal() {
           </form>
         </div>
       </div>
-    </div>
+      </div>
+    </Portal>
   );
 }
