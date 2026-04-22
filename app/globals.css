@@ -30,7 +30,7 @@
 }
 
 html {
-  font-size: 95%;
+  font-size: 92%;
 }
 
 body {
@@ -45,6 +45,59 @@ body {
     url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100,200 Q150,150 200,200 T300,200' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='1.5'/%3E%3Ccircle cx='800' cy='150' r='30' fill='none' stroke='%23fbbf24' stroke-opacity='0.1' stroke-width='1'/%3E%3Cpath d='M100,800 L150,850 L200,800' fill='none' stroke='%23fbbf24' stroke-opacity='0.1' stroke-width='1.5'/%3E%3Cpath d='M850,700 Q900,750 850,800' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='1.5'/%3E%3Ccircle cx='400' cy='500' r='100' fill='none' stroke='%23fbbf24' stroke-opacity='0.05' stroke-width='0.8'/%3E%3Cpath d='M600,600 C650,550 750,550 800,600' fill='none' stroke='%23fbbf24' stroke-opacity='0.08' stroke-width='2'/%3E%3C/svg%3E");
   background-attachment: fixed;
   background-size: 200px 200px, 1000px 1000px;
+}
+
+.content-reduced {
+  font-size: 0.94rem;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 86%;
+  }
+  
+  /* Aggressive heading reduction for mobile content */
+  .content-reduced h1 {
+    font-size: 2.25rem !important; /* Reduce from 3rem+ */
+    line-height: 1 !important;
+    letter-spacing: -0.02em !important;
+  }
+  
+  .content-reduced h2 {
+    font-size: 1.75rem !important;
+  }
+
+  .content-reduced h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .content-reduced p {
+    font-size: 0.9rem !important;
+  }
+  
+  .content-reduced .text-lg {
+    font-size: 1rem !important;
+  }
+  
+  .content-reduced .text-xl {
+    font-size: 1.1rem !important;
+  }
+
+  .content-reduced .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .content-reduced .text-3xl {
+    font-size: 1.5rem !important;
+  }
+
+  .content-reduced .text-4xl {
+    font-size: 1.75rem !important;
+  }
+
+  .content-reduced .text-5xl {
+    font-size: 2rem !important;
+  }
 }
 
 /* Base Glassmorphism Class */

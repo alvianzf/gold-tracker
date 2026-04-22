@@ -62,7 +62,7 @@ export default function RootLayout({
         <Providers>
           <PriceTicker />
           <Navbar />
-          <main className="flex-1 w-full relative z-20">
+          <main className="flex-1 w-full relative z-20 content-reduced">
             {children}
           </main>
           <footer className="w-full relative z-20 border-t border-white/5 bg-black/40 backdrop-blur-3xl py-12 mt-32">

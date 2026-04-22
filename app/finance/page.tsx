@@ -96,8 +96,8 @@ export default function FinancePage() {
       </div>
 
       {/* Filter Bar */}
-      <section className="glass p-1.5 shadow-xl">
-        <div className="glass bg-white/5 p-8 flex flex-col lg:flex-row items-center gap-8 border-white/5">
+      <section className="glass p-1 md:p-1.5 shadow-xl">
+        <div className="glass bg-white/5 p-4 md:p-8 flex flex-col lg:flex-row items-center gap-6 md:gap-8 border-white/5">
           <div className="relative flex-1 w-full group">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-gold transition-colors" />
             <input
@@ -105,29 +105,29 @@ export default function FinancePage() {
               placeholder={t('finance.searchPlaceholder') || 'Search the archives...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 rounded-2xl border border-white/10 py-5 pl-16 pr-8 text-base text-white font-bold focus:outline-none focus:border-gold/40 focus:bg-white/10 transition-all placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-[0.2em] placeholder:text-slate-600"
+              className="w-full bg-white/5 rounded-2xl border border-white/10 py-4 md:py-5 pl-16 pr-8 text-sm md:text-base text-white font-bold focus:outline-none focus:border-gold/40 focus:bg-white/10 transition-all placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-[0.2em] placeholder:text-slate-600"
             />
           </div>
           
-          <div className="flex flex-wrap lg:flex-nowrap items-center gap-6 w-full lg:w-auto">
-            <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-8 py-4 text-sm font-bold text-white shadow-inner">
-              <CalendarIcon className="w-5 h-5 text-gold" />
+          <div className="flex flex-col sm:flex-row flex-wrap lg:flex-nowrap items-center gap-4 md:gap-6 w-full lg:w-auto">
+            <div className="flex items-center gap-2 md:gap-4 bg-white/5 border border-white/10 rounded-2xl px-4 md:px-8 py-3 md:py-4 text-xs md:text-sm font-bold text-white shadow-inner w-full sm:w-auto justify-center sm:justify-start">
+              <CalendarIcon className="w-4 h-4 md:w-5 md:h-5 text-gold shrink-0" />
               <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="bg-transparent border-none text-sm focus:outline-none cursor-pointer [color-scheme:dark]"
+                className="bg-transparent border-none text-xs md:text-sm focus:outline-none cursor-pointer [color-scheme:dark] w-full sm:w-auto"
               />
-              <ArrowRight className="w-4 h-4 text-slate-600" />
+              <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-slate-600 shrink-0" />
               <input
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="bg-transparent border-none text-sm focus:outline-none cursor-pointer [color-scheme:dark]"
+                className="bg-transparent border-none text-xs md:text-sm focus:outline-none cursor-pointer [color-scheme:dark] w-full sm:w-auto"
               />
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
               {[
                 { label: t('finance.thisMonth') || 'This Month', range: { start: format(startOfMonth(new Date()), 'yyyy-MM-dd'), end: format(endOfMonth(new Date()), 'yyyy-MM-dd') } },
                 { label: t('finance.lastMonth') || 'Last Month', range: { start: format(startOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd'), end: format(endOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd') } }
@@ -135,7 +135,7 @@ export default function FinancePage() {
                 <button
                   key={btn.label}
                   onClick={() => setDateRange(btn.range)}
-                  className="px-6 py-4 bg-white/5 border border-white/5 hover:border-gold/20 hover:bg-gold/5 rounded-2xl text-[10px] font-bold text-slate-400 hover:text-gold uppercase tracking-widest transition-all"
+                  className="flex-1 sm:flex-none px-4 md:px-6 py-3 md:py-4 bg-white/5 border border-white/5 hover:border-gold/20 hover:bg-gold/5 rounded-2xl text-[9px] md:text-[10px] font-bold text-slate-400 hover:text-gold uppercase tracking-widest transition-all"
                 >
                   {btn.label}
                 </button>
