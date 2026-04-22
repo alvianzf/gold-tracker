@@ -131,7 +131,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 0.98, y: 40 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-20 w-full max-w-6xl mx-auto px-4"
+          className="mt-20 w-full max-w-6xl mx-auto px-4 hidden md:block"
         >
           <div className="glass p-1.5 shadow-gold/20">
             <div className="glass bg-slate-950/80 p-8 md:p-12 flex flex-col gap-12 border-white/5 overflow-hidden">
