@@ -13,6 +13,8 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { Search, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
 
 import { useI18n } from '@/context/LanguageContext';
+import { FinanceTransaction } from '@/components/FinanceTable';
+import Pagination from '@/components/Pagination';
 
 export default function FinancePage() {
   const { t } = useI18n();
@@ -40,8 +42,8 @@ export default function FinancePage() {
     },
   });
 
-  const transactions = response?.data || [];
-  const analyticsData = response?.analyticsData || [];
+  const transactions: FinanceTransaction[] = response?.data || [];
+  const analyticsData: FinanceTransaction[] = response?.analyticsData || [];
   const stats = response?.stats || { totalIncome: 0, totalExpense: 0, balance: 0 };
   const totalPages = response?.totalPages || 0;
 
@@ -152,8 +154,8 @@ export default function FinancePage() {
         <div className="animate-in zoom-in-95 duration-500">
           <FinanceAnalytics 
             transactions={analyticsData} 
-            availableSources={Array.from(new Set(analyticsData?.map(tx => tx.source) || []))}
-            availablePurposes={Array.from(new Set(analyticsData?.map(tx => tx.purpose) || []))}
+            availableSources={Array.from(new Set(analyticsData?.map((tx: FinanceTransaction) => tx.source) || []))}
+            availablePurposes={Array.from(new Set(analyticsData?.map((tx: FinanceTransaction) => tx.purpose) || []))}
           />
         </div>
       )}
