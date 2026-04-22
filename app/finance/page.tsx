@@ -42,8 +42,23 @@ export default function FinancePage() {
     },
   });
 
+  const { data: analyticsResponse } = useQuery<any>({
+    queryKey: ['finance-analytics', dateRange, searchTerm],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        start: dateRange.start,
+        end: dateRange.end,
+        search: searchTerm
+      });
+      const { data } = await axios.get(`/api/finance/analytics?${params.toString()}`);
+      return data;
+    },
+    enabled: showAnalytics
+  });
+
   const transactions: FinanceTransaction[] = response?.data || [];
-  const analyticsData: FinanceTransaction[] = response?.analyticsData || [];
+  const analyticsData: FinanceTransaction[] = analyticsResponse?.transactions || [];
+  const globalAnalyticsData: FinanceTransaction[] = analyticsResponse?.globalTransactions || [];
   const stats = response?.stats || { totalIncome: 0, totalExpense: 0, balance: 0 };
   const totalPages = response?.totalPages || 0;
 
@@ -154,6 +169,7 @@ export default function FinancePage() {
         <div className="animate-in zoom-in-95 duration-500">
           <FinanceAnalytics 
             transactions={analyticsData} 
+            globalTransactions={globalAnalyticsData}
             availableSources={Array.from(new Set(analyticsData?.map((tx: FinanceTransaction) => tx.source) || []))}
             availablePurposes={Array.from(new Set(analyticsData?.map((tx: FinanceTransaction) => tx.purpose) || []))}
           />

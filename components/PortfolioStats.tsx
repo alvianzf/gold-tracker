@@ -9,16 +9,8 @@ export default function PortfolioStats() {
   const { data: summary, isLoading } = useQuery({
     queryKey: ['portfolio-summary'],
     queryFn: async () => {
-      // We'll calculate this client-side or add a dedicated API
-      // For now, let's assume we have a simple summary endpoint
       const { data } = await axios.get('/api/holdings');
-      
-      const totalCost = data.reduce((acc: number, h: { buyPrice: number }) => acc + h.buyPrice, 0);
-      const totalValue = data.reduce((acc: number, h: { currentValue: number }) => acc + h.currentValue, 0);
-      const totalProfit = totalValue - totalCost;
-      const profitPercent = totalCost > 0 ? (totalProfit / totalCost) * 100 : 0;
-      
-      return { totalValue, totalCost, totalProfit, profitPercent };
+      return data.summary;
     },
   });
 
@@ -49,7 +41,7 @@ export default function PortfolioStats() {
     },
     {
       label: 'Performance Index',
-      value: `${(summary?.profitPercent ?? 0) >= 0 ? '+' : ''}${summary?.profitPercent.toFixed(2)}%`,
+      value: `${(summary?.profitPercent ?? 0) >= 0 ? '+' : ''}${summary?.profitPercent?.toFixed(2) ?? '0.00'}%`,
       icon: Percent,
       color: (summary?.profitPercent ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400',
       bg: 'bg-slate-900',

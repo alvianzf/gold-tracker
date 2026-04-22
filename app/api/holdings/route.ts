@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getLatestPrices, calculateHoldingPL } from '@/lib/portfolio';
+import { getLatestPrices, calculateHoldingPL, getPortfolioSummary } from '@/lib/portfolio';
 import { getSessionUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -54,7 +54,7 @@ export async function GET(req: Request) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
 
-    const [holdings, total] = await Promise.all([
+    const [holdings, total, portfolioSummary] = await Promise.all([
       prisma.holding.findMany({
         where: { status: 'ACTIVE', userId: user.id as string },
         orderBy: { createdAt: 'desc' },
@@ -64,7 +64,8 @@ export async function GET(req: Request) {
       }),
       prisma.holding.count({
         where: { status: 'ACTIVE', userId: user.id as string },
-      })
+      }),
+      getPortfolioSummary(user.id as string)
     ]);
 
     const latestPrices = await getLatestPrices();
@@ -78,6 +79,7 @@ export async function GET(req: Request) {
       total,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
+      summary: portfolioSummary
     });
   } catch (error) {
     console.error('Failed to fetch holdings:', error);

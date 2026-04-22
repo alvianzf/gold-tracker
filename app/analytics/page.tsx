@@ -38,10 +38,10 @@ export default function AnalyticsPage() {
     },
   });
 
-  const { data: financeTransactions } = useQuery({
-    queryKey: ['finance-transactions'],
+  const { data: financeSummary } = useQuery({
+    queryKey: ['finance-summary'],
     queryFn: async () => {
-      const { data } = await axios.get('/api/finance');
+      const { data } = await axios.get('/api/finance/summary');
       return data;
     },
   });
@@ -51,12 +51,7 @@ export default function AnalyticsPage() {
     ? portfolioHistory[portfolioHistory.length - 1].totalValue 
     : 0;
     
-  const financeBalance = useMemo(() => {
-    if (!financeTransactions) return 0;
-    return financeTransactions.reduce((acc: number, tx: any) => 
-      tx.type === 'CREDIT' ? acc + tx.amount : acc - tx.amount, 0
-    );
-  }, [financeTransactions]);
+  const financeBalance = financeSummary?.balance || 0;
 
   const totalWealth = currentGoldValue + financeBalance;
   

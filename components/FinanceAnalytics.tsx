@@ -7,6 +7,7 @@ import { FinanceTransaction } from './FinanceTable';
 
 interface FinanceAnalyticsProps {
   transactions: FinanceTransaction[];
+  globalTransactions?: FinanceTransaction[];
   availableSources: string[];
   availablePurposes: string[];
 }
@@ -26,6 +27,7 @@ const COLORS = ['#fbbf24', '#818cf8', '#34d399', '#fb7185', '#a78bfa', '#f472b6'
 
 export default function FinanceAnalytics({ 
   transactions, 
+  globalTransactions = [],
   availableSources = [], 
   availablePurposes = [] 
 }: FinanceAnalyticsProps) {
@@ -64,7 +66,7 @@ export default function FinanceAnalytics({
   // Aggregate data for Bar Chart (Income vs Expense)
   const comparisonData = useMemo(() => {
     // 1. Calculate Global Totals (Ignoring filters) for the same dates
-    const globalAggregates = transactions.reduce((acc: Record<string, { income: number, expense: number }>, tx) => {
+    const globalAggregates = (globalTransactions.length > 0 ? globalTransactions : transactions).reduce((acc: Record<string, { income: number, expense: number }>, tx) => {
       const date = new Date(tx.date).toLocaleDateString('id-ID', { month: 'short', day: '2-digit' });
       if (!acc[date]) acc[date] = { income: 0, expense: 0 };
       if (tx.type === 'CREDIT') acc[date].income += tx.amount;
