@@ -9,12 +9,67 @@ export async function GET() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const transactions = await prisma.financeTransaction.findMany({
-      where: { userId: user.id as string },
-      orderBy: { date: 'desc' },
-    });
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
+    
+    const search = searchParams.get('search');
+    const start = searchParams.get('start');
+    const end = searchParams.get('end');
 
-    return NextResponse.json(transactions);
+    const where: any = { userId: user.id as string };
+    
+    if (search) {
+      where.OR = [
+        { purpose: { contains: search, mode: 'insensitive' } },
+        { source: { contains: search, mode: 'insensitive' } },
+        { details: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (start || end) {
+      where.date = {};
+      if (start) where.date.gte = new Date(start);
+      if (end) where.date.lte = new Date(end);
+    }
+
+    const [transactions, total, stats, allFilteredTransactions] = await Promise.all([
+      prisma.financeTransaction.findMany({
+        where,
+        orderBy: { date: 'desc' },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.financeTransaction.count({ where }),
+      prisma.financeTransaction.groupBy({
+        where,
+        by: ['type'],
+        _sum: { amount: true },
+      }),
+      prisma.financeTransaction.findMany({
+        where,
+        orderBy: { date: 'desc' },
+      })
+    ]);
+
+    const statsMap = stats.reduce((acc, s) => {
+      acc[s.type] = s._sum.amount || 0;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return NextResponse.json({
+      data: transactions,
+      analyticsData: allFilteredTransactions,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      stats: {
+        totalIncome: statsMap['CREDIT'] || 0,
+        totalExpense: statsMap['DEBIT'] || 0,
+        balance: (statsMap['CREDIT'] || 0) - (statsMap['DEBIT'] || 0),
+      }
+    });
   } catch (error) {
     console.error('Error fetching finance transactions:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

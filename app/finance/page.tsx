@@ -17,6 +17,7 @@ import { useI18n } from '@/context/LanguageContext';
 export default function FinancePage() {
   const { t } = useI18n();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const [dateRange, setDateRange] = useState({
     start: format(startOfMonth(new Date()), 'yyyy-MM-dd'),
     end: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
@@ -24,29 +25,31 @@ export default function FinancePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAnalytics, setShowAnalytics] = useState(true);
 
-  const { data: transactions, isLoading } = useQuery<any[]>({
-    queryKey: ['finance-transactions'],
+  const { data: response, isLoading } = useQuery<any>({
+    queryKey: ['finance-transactions', dateRange, searchTerm, page],
     queryFn: async () => {
-      const { data } = await axios.get('/api/finance');
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '20',
+        start: dateRange.start,
+        end: dateRange.end,
+        search: searchTerm
+      });
+      const { data } = await axios.get(`/api/finance?${params.toString()}`);
       return data;
     },
   });
 
-  const filteredTransactions = transactions?.filter(tx => {
-    const date = new Date(tx.date).toISOString().split('T')[0];
-    const matchesDate = date >= dateRange.start && date <= dateRange.end;
-    const matchesSearch = tx.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         tx.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         tx.details?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesDate && matchesSearch;
-  }) || [];
+  const transactions = response?.data || [];
+  const analyticsData = response?.analyticsData || [];
+  const stats = response?.stats || { totalIncome: 0, totalExpense: 0, balance: 0 };
+  const totalPages = response?.totalPages || 0;
 
-  const stats = {
-    totalIncome: filteredTransactions.filter(tx => tx.type === 'CREDIT').reduce((acc, tx) => acc + tx.amount, 0),
-    totalExpense: filteredTransactions.filter(tx => tx.type === 'DEBIT').reduce((acc, tx) => acc + tx.amount, 0),
-    balance: 0,
+  const handleFilterChange = (type: 'range' | 'search', value: any) => {
+    if (type === 'range') setDateRange(value);
+    else setSearchTerm(value);
+    setPage(1); // Reset to first page
   };
-  stats.balance = stats.totalIncome - stats.totalExpense;
 
   return (
     <div className="space-y-16 pb-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-in fade-in duration-1000">
@@ -104,7 +107,7 @@ export default function FinancePage() {
               type="text"
               placeholder={t('finance.searchPlaceholder') || 'Search the archives...'}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
               className="w-full bg-white/5 rounded-2xl border border-white/10 py-4 md:py-5 pl-16 pr-8 text-sm md:text-base text-white font-bold focus:outline-none focus:border-gold/40 focus:bg-white/10 transition-all placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-[0.2em] placeholder:text-slate-600"
             />
           </div>
@@ -115,14 +118,14 @@ export default function FinancePage() {
               <input
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                onChange={(e) => handleFilterChange('range', { ...dateRange, start: e.target.value })}
                 className="bg-transparent border-none text-xs md:text-sm focus:outline-none cursor-pointer [color-scheme:dark] w-full sm:w-auto"
               />
               <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-slate-600 shrink-0" />
               <input
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                onChange={(e) => handleFilterChange('range', { ...dateRange, end: e.target.value })}
                 className="bg-transparent border-none text-xs md:text-sm focus:outline-none cursor-pointer [color-scheme:dark] w-full sm:w-auto"
               />
             </div>
@@ -134,7 +137,7 @@ export default function FinancePage() {
               ].map((btn) => (
                 <button
                   key={btn.label}
-                  onClick={() => setDateRange(btn.range)}
+                  onClick={() => handleFilterChange('range', btn.range)}
                   className="flex-1 sm:flex-none px-4 md:px-6 py-3 md:py-4 bg-white/5 border border-white/5 hover:border-gold/20 hover:bg-gold/5 rounded-2xl text-[9px] md:text-[10px] font-bold text-slate-400 hover:text-gold uppercase tracking-widest transition-all"
                 >
                   {btn.label}
@@ -148,9 +151,9 @@ export default function FinancePage() {
       {showAnalytics && (
         <div className="animate-in zoom-in-95 duration-500">
           <FinanceAnalytics 
-            transactions={filteredTransactions} 
-            availableSources={Array.from(new Set(transactions?.map(tx => tx.source) || []))}
-            availablePurposes={Array.from(new Set(transactions?.map(tx => tx.purpose) || []))}
+            transactions={analyticsData} 
+            availableSources={Array.from(new Set(analyticsData?.map(tx => tx.source) || []))}
+            availablePurposes={Array.from(new Set(analyticsData?.map(tx => tx.purpose) || []))}
           />
         </div>
       )}
@@ -173,7 +176,7 @@ export default function FinancePage() {
                   <span className="text-[9px] font-bold text-gold/40 uppercase tracking-widest">{stat.sub}</span>
                 </div>
               </div>
-              <div className={cn("text-4xl font-bold tracking-tighter drop-shadow-xl", stat.label === t('finance.income') ? 'text-emerald-400' : 'text-white')}>
+              <div className={cn("text-4xl font-bold tracking-tighter drop-shadow-xl", stat.color)}>
                 {stat.label === t('finance.income') ? '+' : stat.label === t('finance.expense') ? '-' : ''} Rp {formatCurrency(Math.abs(stat.value))}
               </div>
             </div>
@@ -181,10 +184,34 @@ export default function FinancePage() {
         ))}
       </div>
 
-      {/* Main Table Section */}
-      <div className="glass p-1.5 shadow-2xl animate-in slide-in-from-bottom-8 duration-1000">
-        <div className="glass bg-slate-900/40 border-white/5">
-          <FinanceTable transactions={filteredTransactions} isLoading={isLoading} />
+      {/* Recent Ledger Section */}
+      <div className="space-y-10 group">
+        <div className="flex items-center justify-between px-2">
+          <div className="flex items-center gap-4">
+            <div className="w-1.5 h-10 bg-gold rounded-full shadow-gold" />
+            <div>
+              <h2 className="text-3xl font-bold text-white tracking-tight">{t('finance.recentLedger')}</h2>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em] mt-1">{t('finance.latestTransactions')}</p>
+            </div>
+          </div>
+          <div className="hidden md:flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Audit Active</span>
+          </div>
+        </div>
+
+        <div className="glass p-1.5 shadow-2xl relative overflow-hidden">
+          <div className="glass bg-slate-900/60 border-white/5">
+            <FinanceTable transactions={transactions} isLoading={isLoading} />
+            
+            <div className="p-8 border-t border-white/5 bg-white/[0.01]">
+              <Pagination 
+                currentPage={page} 
+                totalPages={totalPages} 
+                onPageChange={setPage} 
+              />
+            </div>
+          </div>
         </div>
       </div>
 

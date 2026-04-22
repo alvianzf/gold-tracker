@@ -40,15 +40,29 @@ export async function GET(req: Request) {
       if (dateTo) where.date.lte = new Date(dateTo);
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where,
-      include: { holding: true },
-      orderBy: {
-        date: sortBy === 'date' ? 'desc' : undefined,
-      },
-    });
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
 
-    return NextResponse.json(transactions);
+    const [transactions, total] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        include: { holding: true },
+        orderBy: {
+          date: sortBy === 'date' ? 'desc' : undefined,
+        },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.transaction.count({ where })
+    ]);
+
+    return NextResponse.json({
+      data: transactions,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.error('Failed to fetch transactions:', error);
     return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });

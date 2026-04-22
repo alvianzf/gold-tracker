@@ -49,11 +49,23 @@ export async function GET() {
     const user = await getSessionUser();
     if (!user || user.id == null) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const holdings = await prisma.holding.findMany({
-      where: { status: 'ACTIVE', userId: user.id as string },
-      orderBy: { createdAt: 'desc' },
-      include: { transactions: true },
-    });
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
+
+    const [holdings, total] = await Promise.all([
+      prisma.holding.findMany({
+        where: { status: 'ACTIVE', userId: user.id as string },
+        orderBy: { createdAt: 'desc' },
+        include: { transactions: true },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.holding.count({
+        where: { status: 'ACTIVE', userId: user.id as string },
+      })
+    ]);
 
     const latestPrices = await getLatestPrices();
     
@@ -61,7 +73,12 @@ export async function GET() {
       holdings.map((h) => calculateHoldingPL(h, latestPrices))
     );
 
-    return NextResponse.json(enrichedHoldings);
+    return NextResponse.json({
+      data: enrichedHoldings,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.error('Failed to fetch holdings:', error);
     return NextResponse.json({ error: 'Failed to fetch holdings' }, { status: 500 });

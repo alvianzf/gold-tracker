@@ -7,9 +7,7 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import ViewHoldingModal from './modals/ViewHoldingModal';
 import EditHoldingModal from './modals/EditHoldingModal';
-import ActionMenu from './ActionMenu';
-import { formatCurrency, cn } from '@/lib/utils';
-import { useI18n } from '@/context/LanguageContext';
+import Pagination from './Pagination';
 
 interface Holding {
   id: string;
@@ -29,14 +27,18 @@ export default function HoldingsTable() {
   const queryClient = useQueryClient();
   const [viewHolding, setViewHolding] = useState<Holding | null>(null);
   const [editHolding, setEditHolding] = useState<Holding | null>(null);
+  const [page, setPage] = useState(1);
 
-  const { data: holdings, isLoading } = useQuery<Holding[]>({
-    queryKey: ['holdings'],
+  const { data: response, isLoading } = useQuery<any>({
+    queryKey: ['holdings', page],
     queryFn: async () => {
-      const { data } = await axios.get('/api/holdings');
+      const { data } = await axios.get(`/api/holdings?page=${page}&limit=20`);
       return data;
     },
   });
+
+  const holdings = response?.data || [];
+  const totalPages = response?.totalPages || 0;
 
   const handleDelete = (holding: Holding) => {
     Swal.fire({
@@ -172,7 +174,7 @@ export default function HoldingsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {holdings.map((holding) => (
+            {holdings.map((holding: Holding) => (
               <tr key={holding.id} className="hover:bg-white/[0.04] transition-all group">
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-6">
@@ -239,6 +241,14 @@ export default function HoldingsTable() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="p-8 border-t border-white/5 bg-white/[0.01] rounded-b-3xl">
+        <Pagination 
+          currentPage={page} 
+          totalPages={totalPages} 
+          onPageChange={setPage} 
+        />
       </div>
 
       {viewHolding && <ViewHoldingModal holding={viewHolding} onClose={() => setViewHolding(null)} />}
