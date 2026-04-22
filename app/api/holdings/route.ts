@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const user = await getSessionUser();
     if (!user || user.id == null) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
