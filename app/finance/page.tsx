@@ -96,8 +96,8 @@ export default function FinancePage() {
       </div>
 
       {/* Filter Bar */}
-      <section className="glass p-1 md:p-1.5 shadow-xl">
-        <div className="glass bg-white/5 p-4 md:p-8 flex flex-col lg:flex-row items-center gap-6 md:gap-8 border-white/5">
+      <section className="glass p-1 md:p-1.5 shadow-xl sticky top-28 z-30 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="glass bg-slate-900/80 p-4 md:p-8 flex flex-col lg:flex-row items-center gap-6 md:gap-8 border-white/5 backdrop-blur-2xl">
           <div className="relative flex-1 w-full group">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-gold transition-colors" />
             <input

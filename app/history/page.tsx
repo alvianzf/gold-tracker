@@ -57,8 +57,8 @@ export default function HistoryPage() {
       </header>
 
       {/* Filters */}
-      <section className="glass p-1.5 shadow-gold/5">
-        <div className="glass bg-slate-900/40 p-10 border-white/5 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <section className="glass p-1 md:p-1.5 shadow-gold/5 sticky top-28 z-30 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="glass bg-slate-900/80 p-6 sm:p-10 border-white/5 grid grid-cols-1 md:grid-cols-4 gap-8 backdrop-blur-2xl">
           <div className="space-y-3">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">{t('history.classification')}</label>
             <div className="relative group/input">

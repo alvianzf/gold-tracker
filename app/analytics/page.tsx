@@ -90,25 +90,28 @@ export default function AnalyticsPage() {
               {t('analytics.subtitle') || 'Consolidating your gold assets and financial liquidity into a singular wealth trajectory.'}
             </p>
           </div>
-
-          <div className="flex bg-white/5 border border-white/10 p-2 rounded-2xl shadow-inner backdrop-blur-xl">
-            {['7d', '30d', '90d', 'all'].map((r) => (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={cn(
-                  "px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                  range === r 
-                    ? "bg-gold text-black shadow-gold scale-105" 
-                    : "text-slate-500 hover:text-white"
-                )}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
         </div>
       </header>
+
+      {/* Sticky Range Selector */}
+      <div className="sticky top-28 z-30 py-4 animate-in fade-in slide-in-from-top-4 duration-500 pointer-events-none">
+        <div className="flex bg-slate-900/80 border border-white/10 p-1.5 rounded-2xl shadow-2xl backdrop-blur-2xl max-w-fit mx-auto shadow-gold/5 pointer-events-auto">
+          {['7d', '30d', '90d', 'all'].map((r) => (
+            <button
+              key={r}
+              onClick={() => setRange(r)}
+              className={cn(
+                "px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                range === r 
+                  ? "bg-gold text-black shadow-gold scale-105" 
+                  : "text-slate-500 hover:text-white"
+              )}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Total Wealth Summary Card */}
       <section className="glass p-1 group">
