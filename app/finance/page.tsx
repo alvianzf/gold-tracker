@@ -15,6 +15,7 @@ import { Search, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
 import { useI18n } from '@/context/LanguageContext';
 import { FinanceTransaction } from '@/components/FinanceTable';
 import Pagination from '@/components/Pagination';
+import Loader from '@/components/Loader';
 
 export default function FinancePage() {
   const { t } = useI18n();
@@ -178,28 +179,36 @@ export default function FinancePage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {[
-          { label: t('finance.totalBalance'), value: stats.balance, icon: Wallet, color: stats.balance >= 0 ? 'text-gold' : 'text-rose-400', sub: t('finance.selectedPeriod') },
-          { label: t('finance.income'), value: stats.totalIncome, icon: TrendingUp, color: 'text-emerald-400', sub: t('finance.totalCredits') },
-          { label: t('finance.expense'), value: stats.totalExpense, icon: TrendingUp, color: 'text-rose-400', sub: t('finance.totalDebits'), rotate: true }
-        ].map((stat, i) => (
-          <div key={i} className="glass p-1 group">
-            <div className="glass bg-white/5 p-10 flex flex-col justify-between h-full border-white/5 group-hover:border-gold/20 transition-all">
-              <div className="flex items-center gap-5 mb-10">
-                <div className={cn("w-14 h-14 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center transition-all group-hover:scale-110 shadow-lg", stat.color)}>
-                  <stat.icon className={cn("w-7 h-7", stat.rotate && "rotate-180")} />
+        {isLoading ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="h-48 glass bg-white/5 rounded-3xl flex items-center justify-center border-white/5">
+              <Loader size="lg" />
+            </div>
+          ))
+        ) : (
+          [
+            { label: t('finance.totalBalance'), value: stats.balance, icon: Wallet, color: stats.balance >= 0 ? 'text-gold' : 'text-rose-400', sub: t('finance.selectedPeriod') },
+            { label: t('finance.income'), value: stats.totalIncome, icon: TrendingUp, color: 'text-emerald-400', sub: t('finance.totalCredits') },
+            { label: t('finance.expense'), value: stats.totalExpense, icon: TrendingUp, color: 'text-rose-400', sub: t('finance.totalDebits'), rotate: true }
+          ].map((stat, i) => (
+            <div key={i} className="glass p-1 group">
+              <div className="glass bg-white/5 p-10 flex flex-col justify-between h-full border-white/5 group-hover:border-gold/20 transition-all">
+                <div className="flex items-center gap-5 mb-10">
+                  <div className={cn("w-14 h-14 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center transition-all group-hover:scale-110 shadow-lg", stat.color)}>
+                    <stat.icon className={cn("w-7 h-7", stat.rotate && "rotate-180")} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">{stat.label}</span>
+                    <span className="text-[9px] font-bold text-gold/40 uppercase tracking-widest">{stat.sub}</span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">{stat.label}</span>
-                  <span className="text-[9px] font-bold text-gold/40 uppercase tracking-widest">{stat.sub}</span>
+                <div className={cn("text-4xl font-bold tracking-tighter drop-shadow-xl", stat.color)}>
+                  {stat.label === t('finance.income') ? '+' : stat.label === t('finance.expense') ? '-' : ''} Rp {formatCurrency(Math.abs(stat.value))}
                 </div>
-              </div>
-              <div className={cn("text-4xl font-bold tracking-tighter drop-shadow-xl", stat.color)}>
-                {stat.label === t('finance.income') ? '+' : stat.label === t('finance.expense') ? '-' : ''} Rp {formatCurrency(Math.abs(stat.value))}
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Recent Ledger Section */}

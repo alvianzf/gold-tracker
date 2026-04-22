@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Wallet, Target, Percent } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
+import Loader from './Loader';
 
 export default function PortfolioStats() {
   const { data: summary, isLoading } = useQuery({
@@ -17,7 +18,9 @@ export default function PortfolioStats() {
   if (isLoading) return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="h-48 bg-white/5 rounded-3xl animate-pulse" />
+        <div key={i} className="h-48 glass bg-white/5 rounded-3xl flex items-center justify-center border-white/5">
+          <Loader size="lg" />
+        </div>
       ))}
     </div>
   );

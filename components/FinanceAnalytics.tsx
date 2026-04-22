@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts';
 import { formatCurrency } from '@/lib/utils';
-import { TrendingUp, PieChart as PieChartIcon, ArrowRightLeft, Filter, Loader2 } from 'lucide-react';
+import { TrendingUp, PieChart as PieChartIcon, ArrowRightLeft, Filter } from 'lucide-react';
+import Loader from './Loader';
 import Link from 'next/link';
 import { FinanceTransaction } from './FinanceTable';
 
@@ -173,7 +174,7 @@ export default function FinanceAnalytics({
               </ResponsiveContainer>
               ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                    <Loader size="lg" />
                   </div>
               )}
               </div>
@@ -233,7 +234,7 @@ export default function FinanceAnalytics({
               </ResponsiveContainer>
               ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                    <Loader size="lg" />
                   </div>
               )}
               </div>
