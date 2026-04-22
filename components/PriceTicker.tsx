@@ -35,30 +35,49 @@ export default function PriceTicker() {
         {/* Repeating groups to ensure seamless loop */}
         {[...Array(4)].map((_, groupIdx) => (
           <div key={groupIdx} className="flex gap-16 items-center px-8">
-            {prices.map((item: { id: string; type: string; priceBuy: number; trend: 'up' | 'down' | 'stable' }, i: number) => (
-              <div key={`${groupIdx}-${item.id}-${i}`} className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] relative group">
-                <span className="text-gold uppercase group-hover:text-white transition-colors">{item.type}</span>
-                <span className="text-slate-400 font-bold tracking-tighter text-[12px] group-hover:text-white transition-colors">
-                  Rp {formatCurrency(item.priceBuy)}
-                </span>
-                <div className="flex items-center justify-center">
-                  {item.trend === 'up' && (
-                    <div className="flex items-center gap-1 text-emerald-400">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      <span className="text-[8px] animate-pulse">BULLISH</span>
-                    </div>
-                  )}
-                  {item.trend === 'down' && (
-                    <div className="flex items-center gap-1 text-rose-400">
-                      <TrendingDown className="w-3.5 h-3.5" />
-                      <span className="text-[8px] animate-pulse text-rose-500">BEARISH</span>
-                    </div>
-                  )}
-                  {item.trend === 'stable' && <Minus className="w-3.5 h-3.5 text-slate-700 opacity-60" />}
+            {prices.map((item: { id: string; type: string; priceBuy: number; previousPriceBuy: number; trend: 'up' | 'down' | 'stable' }, i: number) => {
+              const diff = item.priceBuy - (item.previousPriceBuy || item.priceBuy);
+              const formattedDiff = diff === 0 ? '' : (diff > 0 ? `+${formatCurrency(diff)}` : `-${formatCurrency(Math.abs(diff))}`);
+              
+              return (
+                <div key={`${groupIdx}-${item.id}-${i}`} className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] relative group">
+                  <span className="text-gold uppercase group-hover:text-white transition-colors">{item.type}</span>
+                  <span className="text-slate-400 font-bold tracking-tighter text-[12px] group-hover:text-white transition-colors">
+                    Rp {formatCurrency(item.priceBuy)}
+                  </span>
+                  <div className="flex items-center justify-center">
+                    {item.trend === 'up' && (
+                      <div className="flex items-center gap-2 text-emerald-400">
+                        <div className="flex items-center gap-1">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span className="text-[9px] font-bold">({formattedDiff})</span>
+                        </div>
+                        <span className="text-[8px] animate-pulse">BULLISH</span>
+                      </div>
+                    )}
+                    {item.trend === 'down' && (
+                      <div className="flex items-center gap-2 text-rose-400">
+                        <div className="flex items-center gap-1">
+                          <TrendingDown className="w-3.5 h-3.5" />
+                          <span className="text-[9px] font-bold">({formattedDiff})</span>
+                        </div>
+                        <span className="text-[8px] animate-pulse text-rose-500">BEARISH</span>
+                      </div>
+                    )}
+                    {item.trend === 'stable' && (
+                      <div className="flex items-center gap-2 text-slate-500">
+                        <div className="flex items-center gap-1">
+                          <Minus className="w-3.5 h-3.5 opacity-60" />
+                          <span className="text-[9px] font-bold">(+0)</span>
+                        </div>
+                        <span className="text-[8px]">FLAT</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/10 ml-4" />
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-white/10 ml-4" />
-              </div>
-            ))}
+              );
+            })}
           </div>
         ))}
       </div>
