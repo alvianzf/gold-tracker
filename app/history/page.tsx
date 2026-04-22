@@ -7,6 +7,7 @@ import { Search, Filter, ArrowUpRight, ArrowDownRight, Download, Calendar, Histo
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useI18n } from '@/context/LanguageContext';
+import Pagination from '@/components/Pagination';
 
 export default function HistoryPage() {
   const { t } = useI18n();

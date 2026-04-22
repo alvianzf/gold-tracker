@@ -8,6 +8,9 @@ import Swal from 'sweetalert2';
 import ViewHoldingModal from './modals/ViewHoldingModal';
 import EditHoldingModal from './modals/EditHoldingModal';
 import Pagination from './Pagination';
+import ActionMenu from './ActionMenu';
+import { useI18n } from '@/context/LanguageContext';
+import { formatCurrency, cn } from '@/lib/utils';
 
 interface Holding {
   id: string;
