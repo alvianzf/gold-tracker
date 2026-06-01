@@ -146,3 +146,16 @@ enum Role {
   ADMIN
   USER
 }
+
+model GoldAnalysis {
+  id             String   @id @default(uuid())
+  vendor         GoldType
+  recommendation String   // "BUY", "SELL", or "HOLD"
+  reasons        String   // JSON stringified list of reasons or markdown
+  details        String   // Technical details and rationales
+  date           DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  @@index([vendor, date])
+}
+

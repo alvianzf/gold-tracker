@@ -3,6 +3,7 @@
 import PortfolioStats from '@/components/PortfolioStats';
 import HoldingsTable from '@/components/HoldingsTable';
 import AddHoldingModal from '@/components/AddHoldingModal';
+import GoldAIAdvisory from '@/components/GoldAIAdvisory';
 import { Coins } from 'lucide-react';
 import { useI18n } from '@/context/LanguageContext';
 
@@ -37,6 +38,11 @@ export default function Dashboard() {
         <PortfolioStats />
       </section>
 
+      {/* AI Market Advisory */}
+      <section className="animate-in slide-in-from-top-8 duration-900">
+        <GoldAIAdvisory />
+      </section>
+
       <section className="space-y-10 pt-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-6">
@@ -60,3 +66,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

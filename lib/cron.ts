@@ -2,20 +2,22 @@ import cron from 'node-cron';
 import { scrapeGoldPrices } from './scraper';
 import prisma from './prisma';
 import { saveDailySummary } from './portfolio';
+import { runDailyGoldAnalysis } from './gold-ai';
 
 let isScheduled = false;
 
 /**
- * Daily schedule at 08:30 Asia/Jakarta (01:30 UTC)
- * Scrapes fresh gold prices and saves portfolio snapshots.
+ * Daily schedule at 08:30 Asia/Jakarta (01:30 UTC) for scrapers
+ * and 09:10 Asia/Jakarta (02:10 UTC) for AI Gold Analysis.
  * If data already exists for the day, it is deleted and replaced.
  */
 export function initCron() {
   if (isScheduled) return; // prevent duplicate scheduling on HMR
   isScheduled = true;
 
-  console.log('[CRON] Initialized — daily scrape scheduled at 08:30 WIB (01:30 UTC)');
+  console.log('[CRON] Initialized — daily scrape scheduled at 08:30 WIB (01:30 UTC), AI Analysis scheduled at 09:10 WIB (02:10 UTC)');
 
+  // 1. Daily Gold Prices Scraper & Snapshot (08:30 WIB / 01:30 UTC)
   cron.schedule('30 1 * * *', async () => {
     console.log('[CRON] Running daily gold price scrape...');
     try {
@@ -68,4 +70,16 @@ export function initCron() {
       console.error('[CRON] Daily scrape failed:', error);
     }
   });
+
+  // 2. Daily AI Gold Price Analysis (09:10 WIB / 02:10 UTC)
+  cron.schedule('10 2 * * *', async () => {
+    console.log('[CRON] Running daily AI gold vendor price analysis...');
+    try {
+      await runDailyGoldAnalysis();
+      console.log('[CRON] Daily AI gold price analysis complete.');
+    } catch (error) {
+      console.error('[CRON] Daily AI gold analysis failed:', error);
+    }
+  });
 }
+
