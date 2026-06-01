@@ -116,12 +116,12 @@ export async function runDailyGoldAnalysis(): Promise<GoldVendorRecommendation[]
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'gemini/gemini-2.5-flash',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an elite precious metals strategist who delivers rigorous, highly accurate, and mathematically sound investment advice in Indonesian rupiah gold markets.' },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 1500,
+      max_tokens: 4000,
       temperature: 0.7
     });
 
@@ -129,7 +129,14 @@ export async function runDailyGoldAnalysis(): Promise<GoldVendorRecommendation[]
     // Clean up response if there are markdown blocks (in case Gemini still adds them despite instructions)
     const cleanedContent = rawContent.replace(/```json/g, '').replace(/```/g, '').trim();
     
-    const parsedData = JSON.parse(cleanedContent);
+    let parsedData;
+    try {
+      parsedData = JSON.parse(cleanedContent);
+    } catch (err) {
+      console.error("[GOLD-AI] Raw content returned by AI:", rawContent);
+      console.error("[GOLD-AI] Cleaned content:", cleanedContent);
+      throw err;
+    }
     const analyses: GoldVendorRecommendation[] = parsedData.analyses || [];
 
     if (analyses.length > 0) {

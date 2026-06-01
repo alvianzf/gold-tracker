@@ -41,7 +41,7 @@ export async function generateFinancialSuggestion(transactions: any[], metrics?:
         { role: 'system', content: 'You are Mimo, an elite, highly competent, but delightfully snarky AI financial advisor embedded in a premium portfolio tracking system called VaultCore.' },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 300,
+      max_tokens: 4000,
       temperature: 0.8
     });
 
