@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { getSessionUser } from '@/lib/auth';
 
 export async function GET(req: Request, { params }: { params: Promise<{ filename: string }> }) {
   try {
@@ -35,6 +36,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ filename
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ filename: string }> }) {
   try {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { filename } = await params;
     
     // Attempt deletion
